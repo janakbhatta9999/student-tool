@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>StudyHub — Student Toolkit</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-brand">📚 StudyHub</div>
+    <ul class="nav-links">
+      <li><a href="#tools">Tools</a></li>
+      <li><a href="#" class="nav-cta">Get Started</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-bg-text">STUDY</div>
+    <div class="hero-content">
+      <span class="hero-tag">All-in-one for students</span>
+      <h1>Your <em>Academic</em><br/>Toolkit.</h1>
+      <p>8 powerful tools designed to boost your focus, manage tasks, and ace your exams — all in one place.</p>
+      <a href="#tools" class="btn-primary">Explore Tools ↓</a>
+    </div>
+    <div class="hero-cards">
+      <div class="floating-card c1">⏱ Pomodoro</div>
+      <div class="floating-card c2">🎓 GPA Calc</div>
+      <div class="floating-card c3">🃏 Flashcards</div>
+      <div class="floating-card c4">✅ Tasks</div>
+    </div>
+  </header>
+
+  <!-- TOOLS SECTION -->
+  <section id="tools" class="tools-section">
+    <h2 class="section-title">Choose Your Tool</h2>
+
+    <!-- TOOL TABS -->
+    <div class="tool-tabs">
+      <button class="tab active" data-tab="pomodoro">⏱ Pomodoro</button>
+      <button class="tab" data-tab="todo">✅ To-Do List</button>
+      <button class="tab" data-tab="wordcount">📝 Word Counter</button>
+      <button class="tab" data-tab="gpa">🎓 GPA Calc</button>
+      <button class="tab" data-tab="percent">🔢 % Calculator</button>
+      <button class="tab" data-tab="flashcard">🃏 Flashcards</button>
+      <button class="tab" data-tab="converter">📐 Unit Converter</button>
+      <button class="tab" data-tab="planner">📅 Study Planner</button>
+    </div>
+
+    <!-- TOOL PANELS -->
+    <div class="tool-panels">
+
+      <!-- 1. POMODORO TIMER -->
+      <div class="panel active" id="panel-pomodoro">
+        <div class="panel-header">
+          <h3>Pomodoro Timer</h3>
+          <p>Focus for 25 min, then take a 5-min break.</p>
+        </div>
+        <div class="pomodoro-wrap">
+          <div class="pomo-mode-btns">
+            <button class="pomo-mode active" data-min="25" data-label="Focus">🧠 Focus</button>
+            <button class="pomo-mode" data-min="5" data-label="Short Break">☕ Short Break</button>
+            <button class="pomo-mode" data-min="15" data-label="Long Break">🛋️ Long Break</button>
+          </div>
+          <div class="clock-ring">
+            <svg viewBox="0 0 200 200" class="ring-svg">
+              <circle cx="100" cy="100" r="88" class="ring-bg"/>
+              <circle cx="100" cy="100" r="88" class="ring-progress" id="ringProgress"/>
+            </svg>
+            <div class="clock-display">
+              <span id="timerDisplay">25:00</span>
+              <small id="timerLabel">Focus</small>
+            </div>
+          </div>
+          <div class="pomo-controls">
+            <button class="btn-round" id="pomoBtnStart">▶ Start</button>
+            <button class="btn-round outline" id="pomoBtnReset">↺ Reset</button>
+          </div>
+          <div class="pomo-sessions">Session: <strong id="sessionCount">0</strong> / 4 completed</div>
+        </div>
+      </div>
+
+      <!-- 2. TO-DO LIST -->
+      <div class="panel" id="panel-todo">
+        <div class="panel-header">
+          <h3>To-Do List</h3>
+          <p>Track your tasks and stay on top of deadlines.</p>
+        </div>
+        <div class="todo-wrap">
+          <div class="todo-input-row">
+            <input type="text" id="todoInput" placeholder="Add a new task..." />
+            <select id="todoPriority">
+              <option value="high">🔴 High</option>
+              <option value="mid" selected>🟡 Medium</option>
+              <option value="low">🟢 Low</option>
+            </select>
+            <button class="btn-primary small" id="todoAddBtn">Add</button>
+          </div>
+          <div class="todo-filters">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="active">Active</button>
+            <button class="filter-btn" data-filter="done">Done</button>
+          </div>
+          <ul class="todo-list" id="todoList"></ul>
+          <div class="todo-footer">
+            <span id="todoCount">0 tasks left</span>
+            <button class="link-btn" id="clearDone">Clear Done</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. WORD COUNTER -->
+      <div class="panel" id="panel-wordcount">
+        <div class="panel-header">
+          <h3>Word Counter</h3>
+          <p>Paste your text and get instant stats.</p>
+        </div>
+        <div class="wordcount-wrap">
+          <textarea id="wcTextarea" placeholder="Paste or type your text here..."></textarea>
+          <div class="wc-stats">
+            <div class="wc-stat"><span id="wcWords">0</span><label>Words</label></div>
+            <div class="wc-stat"><span id="wcChars">0</span><label>Characters</label></div>
+            <div class="wc-stat"><span id="wcCharsNoSpace">0</span><label>No Spaces</label></div>
+            <div class="wc-stat"><span id="wcSentences">0</span><label>Sentences</label></div>
+            <div class="wc-stat"><span id="wcParagraphs">0</span><label>Paragraphs</label></div>
+            <div class="wc-stat"><span id="wcReadTime">0 min</span><label>Read Time</label></div>
+          </div>
+          <button class="btn-primary small" id="wcClear">Clear Text</button>
+        </div>
+      </div>
+
+      <!-- 4. GPA CALCULATOR -->
+      <div class="panel" id="panel-gpa">
+        <div class="panel-header">
+          <h3>GPA Calculator</h3>
+          <p>Enter your subjects to calculate semester GPA.</p>
+        </div>
+        <div class="gpa-wrap">
+          <div class="gpa-table-header">
+            <span>Subject</span><span>Credits</span><span>Grade</span><span></span>
+          </div>
+          <div id="gpaRows">
+            <div class="gpa-row">
+              <input type="text" placeholder="Subject name" class="gpa-subject"/>
+              <input type="number" placeholder="Credits" class="gpa-credit" min="1" max="6"/>
+              <select class="gpa-grade">
+                <option value="4.0">A (4.0)</option>
+                <option value="3.7">A- (3.7)</option>
+                <option value="3.3">B+ (3.3)</option>
+                <option value="3.0">B (3.0)</option>
+                <option value="2.7">B- (2.7)</option>
+                <option value="2.3">C+ (2.3)</option>
+                <option value="2.0">C (2.0)</option>
+                <option value="1.0">D (1.0)</option>
+                <option value="0.0">F (0.0)</option>
+              </select>
+              <button class="del-row">✕</button>
+            </div>
+          </div>
+          <button class="btn-outline small" id="gpaAddRow">+ Add Subject</button>
+          <button class="btn-primary small" id="gpaCalc">Calculate GPA</button>
+          <div class="gpa-result" id="gpaResult"></div>
+        </div>
+      </div>
+
+      <!-- 5. PERCENTAGE CALCULATOR -->
+      <div class="panel" id="panel-percent">
+        <div class="panel-header">
+          <h3>Percentage Calculator</h3>
+          <p>Find your score percentage and grade.</p>
+        </div>
+        <div class="percent-wrap">
+          <div class="percent-modes">
+            <button class="pct-tab active" data-mode="marks">Marks %</button>
+            <button class="pct-tab" data-mode="percent">% of Number</button>
+            <button class="pct-tab" data-mode="change">% Change</button>
+          </div>
+
+          <div class="pct-panel active" id="pct-marks">
+            <div class="field-group">
+              <label>Marks Obtained</label>
+              <input type="number" id="pctObtained" placeholder="e.g. 87"/>
+            </div>
+            <div class="field-group">
+              <label>Total Marks</label>
+              <input type="number" id="pctTotal" placeholder="e.g. 100"/>
+            </div>
+            <button class="btn-primary small" id="pctMarksCalc">Calculate</button>
+            <div class="pct-result" id="pctMarksResult"></div>
+          </div>
+
+          <div class="pct-panel" id="pct-percent">
+            <div class="field-group">
+              <label>Percentage (%)</label>
+              <input type="number" id="pctPct" placeholder="e.g. 15"/>
+            </div>
+            <div class="field-group">
+              <label>Of Number</label>
+              <input type="number" id="pctNum" placeholder="e.g. 500"/>
+            </div>
+            <button class="btn-primary small" id="pctPercentCalc">Calculate</button>
+            <div class="pct-result" id="pctPercentResult"></div>
+          </div>
+
+          <div class="pct-panel" id="pct-change">
+            <div class="field-group">
+              <label>Original Value</label>
+              <input type="number" id="pctOld" placeholder="e.g. 80"/>
+            </div>
+            <div class="field-group">
+              <label>New Value</label>
+              <input type="number" id="pctNew" placeholder="e.g. 95"/>
+            </div>
+            <button class="btn-primary small" id="pctChangeCalc">Calculate</button>
+            <div class="pct-result" id="pctChangeResult"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. FLASHCARDS -->
+      <div class="panel" id="panel-flashcard">
+        <div class="panel-header">
+          <h3>Flashcard Maker</h3>
+          <p>Create, flip, and study your own flashcards.</p>
+        </div>
+        <div class="flashcard-wrap">
+          <div class="fc-create">
+            <input type="text" id="fcFront" placeholder="Question / Front side"/>
+            <input type="text" id="fcBack" placeholder="Answer / Back side"/>
+            <button class="btn-primary small" id="fcAdd">+ Add Card</button>
+          </div>
+          <div class="fc-viewer" id="fcViewer">
+            <div class="fc-empty" id="fcEmpty">No cards yet. Add some above!</div>
+            <div class="flashcard" id="flashcard" style="display:none;">
+              <div class="fc-inner" id="fcInner">
+                <div class="fc-front" id="fcFrontDisplay"></div>
+                <div class="fc-back" id="fcBackDisplay"></div>
+              </div>
+            </div>
+            <div class="fc-controls" id="fcControls" style="display:none;">
+              <button class="btn-round outline" id="fcPrev">← Prev</button>
+              <span id="fcCounter">1 / 1</span>
+              <button class="btn-round outline" id="fcNext">Next →</button>
+            </div>
+            <div class="fc-hint" id="fcHint" style="display:none;">Click card to flip</div>
+          </div>
+          <button class="link-btn danger" id="fcClear">🗑 Clear all cards</button>
+        </div>
+      </div>
+
+      <!-- 7. UNIT CONVERTER -->
+      <div class="panel" id="panel-converter">
+        <div class="panel-header">
+          <h3>Unit Converter</h3>
+          <p>Convert length, weight, temperature & more.</p>
+        </div>
+        <div class="converter-wrap">
+          <div class="conv-category-btns">
+            <button class="conv-cat active" data-cat="length">📏 Length</button>
+            <button class="conv-cat" data-cat="weight">⚖️ Weight</button>
+            <button class="conv-cat" data-cat="temp">🌡️ Temp</button>
+            <button class="conv-cat" data-cat="area">📐 Area</button>
+            <button class="conv-cat" data-cat="time">⏰ Time</button>
+          </div>
+          <div class="conv-inputs">
+            <div class="conv-field">
+              <input type="number" id="convFrom" placeholder="Enter value"/>
+              <select id="convFromUnit"></select>
+            </div>
+            <button class="btn-round swap" id="convSwap">⇄</button>
+            <div class="conv-field">
+              <input type="number" id="convTo" placeholder="Result" readonly/>
+              <select id="convToUnit"></select>
+            </div>
+          </div>
+          <button class="btn-primary small" id="convCalc">Convert</button>
+          <div class="conv-result" id="convResult"></div>
+        </div>
+      </div>
+
+      <!-- 8. STUDY PLANNER -->
+      <div class="panel" id="panel-planner">
+        <div class="panel-header">
+          <h3>Study Planner</h3>
+          <p>Schedule your study sessions for the week.</p>
+        </div>
+        <div class="planner-wrap">
+          <div class="planner-add">
+            <input type="text" id="plannerSubject" placeholder="Subject / Topic"/>
+            <input type="time" id="plannerTime"/>
+            <select id="plannerDay">
+              <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
+              <option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option>
+            </select>
+            <input type="number" id="plannerDuration" placeholder="Duration (min)" min="15" step="15"/>
+            <button class="btn-primary small" id="plannerAdd">+ Add Session</button>
+          </div>
+          <div class="planner-grid" id="plannerGrid"></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <p>📚 StudyHub — Built for Students, by Students</p>
+    <p class="footer-sub">Focus. Learn. Succeed.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
