@@ -653,3 +653,92 @@ document.querySelectorAll('.tab').forEach(tab => {
 
   renderGrid();
 })();
+
+
+// =============================================
+// 9. BMI CALCULATOR
+// =============================================
+(function () {
+  let heightUnit = 'cm';
+
+  // Toggle cm / ft-in
+  document.querySelectorAll('.height-unit').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.height-unit').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      heightUnit = btn.dataset.unit;
+      document.getElementById('bmiHeightCm').classList.toggle('active', heightUnit === 'cm');
+      document.getElementById('bmiHeightFt').classList.toggle('active', heightUnit === 'ft');
+    });
+  });
+
+  document.getElementById('bmiCalc').addEventListener('click', () => {
+    const weight   = parseFloat(document.getElementById('bmiWeight').value);
+    const age      = parseInt(document.getElementById('bmiAge').value) || null;
+    const sex      = document.getElementById('bmiSex').value;
+    const resultEl = document.getElementById('bmiResult');
+
+    let heightM;
+    if (heightUnit === 'cm') {
+      const cm = parseFloat(document.getElementById('bmiCm').value);
+      if (isNaN(cm) || cm < 50 || cm > 300) return alert('Please enter a valid height in cm (50–300).');
+      heightM = cm / 100;
+    } else {
+      const ft   = parseFloat(document.getElementById('bmiFt').value) || 0;
+      const inch = parseFloat(document.getElementById('bmiIn').value) || 0;
+      if (ft < 1) return alert('Please enter a valid height in feet.');
+      heightM = (ft * 12 + inch) * 0.0254;
+    }
+
+    if (isNaN(weight) || weight < 1 || weight > 500)
+      return alert('Please enter a valid weight (1–500 kg).');
+
+    const bmi      = weight / (heightM * heightM);
+    const bmiRound = Math.round(bmi * 10) / 10;
+
+    // Category & advice
+    let category, catColor, tip;
+    if (bmi < 18.5) {
+      category = 'Underweight'; catColor = '#4ecdc4';
+      tip = '💡 Your BMI is below the healthy range. Focus on nutrient-rich foods and consider consulting a doctor or dietitian for a healthy weight-gain plan.';
+    } else if (bmi < 25) {
+      category = 'Normal Weight'; catColor = '#a8e063';
+      tip = '✅ You are within the healthy BMI range. Maintain your balanced diet and regular physical activity to stay healthy.';
+    } else if (bmi < 30) {
+      category = 'Overweight'; catColor = '#f5c542';
+      tip = '⚠️ Your BMI is slightly above the healthy range. Small lifestyle changes like daily walks and a balanced diet can make a big difference.';
+    } else if (bmi < 35) {
+      category = 'Obese (Class I)'; catColor = '#f5a742';
+      tip = '⚠️ Your BMI indicates Class I obesity. Speaking with a healthcare provider about diet and exercise changes is a helpful first step.';
+    } else {
+      category = 'Obese (Class II+)'; catColor = '#f26b6b';
+      tip = '🚨 Your BMI indicates Class II+ obesity. Please consult a doctor for a personalised health plan. Small consistent steps matter greatly.';
+    }
+
+    // Healthy weight range
+    const minW = (18.5 * heightM * heightM).toFixed(1);
+    const maxW = (24.9 * heightM * heightM).toFixed(1);
+
+    // Needle: map BMI 15–40 → 0–100%
+    const needlePct = Math.min(100, Math.max(0, ((bmi - 15) / (40 - 15)) * 100));
+
+    document.getElementById('bmiScore').textContent = bmiRound;
+    const catEl = document.getElementById('bmiCategory');
+    catEl.textContent       = category;
+    catEl.style.background  = catColor + '22';
+    catEl.style.color       = catColor;
+
+    document.getElementById('bmiInfo').innerHTML = `
+      <strong>Healthy weight for your height:</strong><br/>
+      ${minW} kg – ${maxW} kg<br/><br/>
+      ${age ? `<strong>Age:</strong> ${age} years<br/>` : ''}
+      ${sex ? `<strong>Sex:</strong> ${sex.charAt(0).toUpperCase() + sex.slice(1)}<br/>` : ''}
+      <strong>Height:</strong> ${(heightM * 100).toFixed(1)} cm<br/>
+      <strong>Weight:</strong> ${weight} kg
+    `;
+
+    document.getElementById('bmiNeedle').style.left = needlePct + '%';
+    document.getElementById('bmiTip').textContent   = tip;
+    resultEl.className = 'bmi-result show';
+  });
+})();

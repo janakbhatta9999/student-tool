@@ -24,7 +24,7 @@
     <div class="hero-content">
       <span class="hero-tag">All-in-one for students</span>
       <h1>Your <em>Academic</em><br/>Toolkit.</h1>
-      <p>8 powerful tools designed to boost your focus, manage tasks, and ace your exams — all in one place.</p>
+      <p>9 powerful tools designed to boost your focus, manage tasks, and ace your exams — all in one place.</p>
       <a href="#tools" class="btn-primary">Explore Tools ↓</a>
     </div>
     <div class="hero-cards">
@@ -49,6 +49,7 @@
       <button class="tab" data-tab="flashcard">🃏 Flashcards</button>
       <button class="tab" data-tab="converter">📐 Unit Converter</button>
       <button class="tab" data-tab="planner">📅 Study Planner</button>
+      <button class="tab" data-tab="bmi">⚖️ BMI Calculator</button>
     </div>
 
     <!-- TOOL PANELS -->
@@ -300,6 +301,84 @@
             <button class="btn-primary small" id="plannerAdd">+ Add Session</button>
           </div>
           <div class="planner-grid" id="plannerGrid"></div>
+        </div>
+      </div>
+
+      <!-- 9. BMI CALCULATOR -->
+      <div class="panel" id="panel-bmi">
+        <div class="panel-header">
+          <h3>BMI Calculator</h3>
+          <p>Enter your weight and height to find your Body Mass Index.</p>
+        </div>
+        <div class="bmi-wrap">
+          <div class="bmi-inputs">
+            <div class="field-group">
+              <label>Weight (kg)</label>
+              <input type="number" id="bmiWeight" placeholder="e.g. 65" min="1" max="500"/>
+            </div>
+            <div class="field-group">
+              <label>Height</label>
+              <div class="bmi-height-row">
+                <div class="bmi-height-toggle">
+                  <button class="height-unit active" data-unit="cm">cm</button>
+                  <button class="height-unit" data-unit="ft">ft/in</button>
+                </div>
+                <div id="bmiHeightCm" class="bmi-height-input active">
+                  <input type="number" id="bmiCm" placeholder="e.g. 170" min="50" max="300"/>
+                </div>
+                <div id="bmiHeightFt" class="bmi-height-input">
+                  <input type="number" id="bmiFt" placeholder="Feet" min="1" max="9"/>
+                  <input type="number" id="bmiIn" placeholder="Inches" min="0" max="11"/>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="bmi-age-sex">
+            <div class="field-group">
+              <label>Age (optional)</label>
+              <input type="number" id="bmiAge" placeholder="e.g. 20" min="5" max="120"/>
+            </div>
+            <div class="field-group">
+              <label>Sex (optional)</label>
+              <select id="bmiSex">
+                <option value="">Prefer not to say</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn-primary small" id="bmiCalc">Calculate BMI</button>
+
+          <!-- RESULT -->
+          <div class="bmi-result" id="bmiResult">
+            <div class="bmi-result-top">
+              <div class="bmi-score-box">
+                <div class="bmi-label-small">Your BMI</div>
+                <div class="bmi-score" id="bmiScore">--</div>
+                <div class="bmi-category" id="bmiCategory">—</div>
+              </div>
+              <div class="bmi-info-box" id="bmiInfo"></div>
+            </div>
+
+            <!-- BMI SCALE BAR -->
+            <div class="bmi-scale">
+              <div class="bmi-scale-bar">
+                <div class="bmi-seg" style="background:#4ecdc4;flex:2" title="Underweight <18.5"></div>
+                <div class="bmi-seg" style="background:#a8e063;flex:2.5" title="Normal 18.5–24.9"></div>
+                <div class="bmi-seg" style="background:#f5c542;flex:2.5" title="Overweight 25–29.9"></div>
+                <div class="bmi-seg" style="background:#f5a742;flex:1.5" title="Obese I 30–34.9"></div>
+                <div class="bmi-seg" style="background:#f26b6b;flex:1.5" title="Obese II 35+"></div>
+                <div class="bmi-needle" id="bmiNeedle"></div>
+              </div>
+              <div class="bmi-scale-labels">
+                <span>Under</span><span>Normal</span><span>Over</span><span>Obese I</span><span>Obese II</span>
+              </div>
+              <div class="bmi-scale-nums">
+                <span>15</span><span>18.5</span><span>25</span><span>30</span><span>35</span><span>40+</span>
+              </div>
+            </div>
+            <div class="bmi-tip" id="bmiTip"></div>
+          </div>
         </div>
       </div>
 
