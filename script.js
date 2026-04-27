@@ -261,59 +261,103 @@ document.querySelectorAll('.tab').forEach(tab => {
 // 4. GPA CALCULATOR
 // =============================================
 (function () {
-  const rowsEl  = document.getElementById('gpaRows');
-  const addBtn  = document.getElementById('gpaAddRow');
-  const calcBtn = document.getElementById('gpaCalc');
   const resultEl = document.getElementById('gpaResult');
+  const calcBtn = document.getElementById('gpaCalc');
+  let currentMode = 'marks';
 
-  function gradeSelectHTML() {
-    const grades = [
-      ['4.0','A+ (4.0)'],['3.6','A (3.6)'],['3.2','B+ (3.2)'],
-      ['2.8','B (2.8)'],['2.4','C+ (2.4)'],['2.0','C (2.0)'],
-      ['1.6','D (1.6)'],['0.0','NG (0.0)']
-    ];
-    return '<select class="gpa-grade">' + grades.map(([v,l]) => `<option value="${v}">${l}</option>`).join('') + '</select>';
+  // Toggle mode
+  document.querySelectorAll('.gpa-mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.gpa-mode-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.gpa-table-container').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      currentMode = btn.dataset.mode;
+      document.getElementById('gpa-' + currentMode + '-table').classList.add('active');
+      resultEl.className = 'gpa-result';
+    });
+  });
+
+  // Inject grade selects into grades table
+  const selectHTML = `
+    <select class="neb-grade-select">
+      <option value="">-</option>
+      <option value="4.0">A+ (4.0)</option>
+      <option value="3.6">A (3.6)</option>
+      <option value="3.2">B+ (3.2)</option>
+      <option value="2.8">B (2.8)</option>
+      <option value="2.4">C+ (2.4)</option>
+      <option value="2.0">C (2.0)</option>
+      <option value="1.6">D (1.6)</option>
+      <option value="0.0">NG (0.0)</option>
+    </select>
+  `;
+  document.querySelectorAll('.grade-cell').forEach(cell => {
+    cell.innerHTML = selectHTML;
+  });
+
+  function getGradePointFromMarks(th, inMarks) {
+    const total = th + inMarks;
+    if (total >= 90) return 4.0;
+    if (total >= 80) return 3.6;
+    if (total >= 70) return 3.2;
+    if (total >= 60) return 2.8;
+    if (total >= 50) return 2.4;
+    if (total >= 40) return 2.0;
+    if (total >= 35) return 1.6;
+    return 0.0;
   }
 
-  addBtn.addEventListener('click', () => {
-    const row = document.createElement('div');
-    row.className = 'gpa-row';
-    row.innerHTML = `
-      <input type="text" placeholder="Subject name" class="gpa-subject"/>
-      <input type="number" placeholder="Credits" class="gpa-credit" min="1" max="6"/>
-      ${gradeSelectHTML()}
-      <button class="del-row">✕</button>
-    `;
-    row.querySelector('.del-row').addEventListener('click', () => row.remove());
-    rowsEl.appendChild(row);
-  });
-
-  // Delegate delete for initial row
-  rowsEl.addEventListener('click', e => {
-    if (e.target.classList.contains('del-row')) {
-      const rows = rowsEl.querySelectorAll('.gpa-row');
-      if (rows.length > 1) e.target.closest('.gpa-row').remove();
-    }
-  });
-
   calcBtn.addEventListener('click', () => {
-    const rows = rowsEl.querySelectorAll('.gpa-row');
     let totalPoints = 0, totalCredits = 0;
     let hasNG = false;
+    let anyValid = false;
 
-    rows.forEach(row => {
-      const credit = parseFloat(row.querySelector('.gpa-credit').value);
-      const grade  = parseFloat(row.querySelector('.gpa-grade').value);
-      if (!isNaN(credit) && credit > 0) {
-        if (grade === 0.0) hasNG = true;
-        totalPoints  += credit * grade;
-        totalCredits += credit;
-      }
-    });
+    if (currentMode === 'marks') {
+      const rows = document.querySelectorAll('#gpaMarksRows tr');
+      rows.forEach(row => {
+        const credit = parseFloat(row.dataset.credit);
+        const thVal = row.querySelector('.neb-th').value;
+        const inVal = row.querySelector('.neb-in').value;
+        if (thVal !== '' || inVal !== '') {
+          anyValid = true;
+          const th = parseFloat(thVal) || 0;
+          const inM = parseFloat(inVal) || 0;
+          const gp = getGradePointFromMarks(th, inM);
+          if (gp === 0.0) hasNG = true;
+          totalPoints += credit * gp;
+          totalCredits += credit;
+        }
+      });
+    } else {
+      const rows = document.querySelectorAll('#gpaGradesRows tr');
+      rows.forEach(row => {
+        const credit = parseFloat(row.dataset.credit);
+        const thSel = row.querySelector('.grade-cell.th select').value;
+        const prSel = row.querySelector('.grade-cell.pr select').value;
+        
+        if (thSel !== '' || prSel !== '') {
+          anyValid = true;
+          let gp;
+          
+          if (thSel !== '' && prSel !== '') {
+            // Assume 75% theory, 25% practical for simplicity when combining grades
+            gp = (parseFloat(thSel) * 0.75) + (parseFloat(prSel) * 0.25);
+            if (parseFloat(thSel) === 0.0 || parseFloat(prSel) === 0.0) hasNG = true;
+          } else {
+            // If only one is provided, treat it as the total subject grade
+            gp = parseFloat(thSel !== '' ? thSel : prSel);
+            if (gp === 0.0) hasNG = true;
+          }
+          
+          totalPoints += credit * gp;
+          totalCredits += credit;
+        }
+      });
+    }
 
-    if (totalCredits === 0) {
+    if (!anyValid || totalCredits === 0) {
       resultEl.className = 'gpa-result show';
-      resultEl.innerHTML = `<span style="color:var(--rose)">Please fill in valid credits.</span>`;
+      resultEl.innerHTML = `<span style="color:var(--rose)">Please enter marks or grades.</span>`;
       return;
     }
 

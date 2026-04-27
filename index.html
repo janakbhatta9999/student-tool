@@ -142,31 +142,60 @@
       <div class="panel" id="panel-gpa">
         <div class="panel-header">
           <h3>NEB +2 GPA Calculator</h3>
-          <p>Enter your subjects and credit hrs to calculate NEB GPA.</p>
+          <p>Calculate your GPA using Marks or Expected Grades.</p>
         </div>
         <div class="gpa-wrap">
-          <div class="gpa-table-header">
-            <span>Subject</span><span>Credit Hrs</span><span>Grade</span><span></span>
+          <div class="gpa-mode-toggle">
+            <button class="gpa-mode-btn active" data-mode="marks">📝 Enter Marks</button>
+            <button class="gpa-mode-btn" data-mode="grades">🎯 Expected Grades</button>
           </div>
-          <div id="gpaRows">
-            <div class="gpa-row">
-              <input type="text" placeholder="Subject name" class="gpa-subject"/>
-              <input type="number" placeholder="Credits" class="gpa-credit" min="1" max="6"/>
-              <select class="gpa-grade">
-                <option value="4.0">A+ (4.0)</option>
-                <option value="3.6">A (3.6)</option>
-                <option value="3.2">B+ (3.2)</option>
-                <option value="2.8">B (2.8)</option>
-                <option value="2.4">C+ (2.4)</option>
-                <option value="2.0">C (2.0)</option>
-                <option value="1.6">D (1.6)</option>
-                <option value="0.0">NG (0.0)</option>
-              </select>
-              <button class="del-row">✕</button>
-            </div>
+
+          <!-- MARKS MODE -->
+          <div class="gpa-table-container active" id="gpa-marks-table">
+            <table class="neb-table">
+              <thead>
+                <tr>
+                  <th>Subject</th>
+                  <th>Theory Marks (75)</th>
+                  <th>Internal Marks (25)</th>
+                </tr>
+              </thead>
+              <tbody id="gpaMarksRows">
+                <tr data-credit="3"><td>Nepali</td><td><input type="number" class="neb-th" min="0" max="75"></td><td><input type="number" class="neb-in" min="0" max="25"></td></tr>
+                <tr data-credit="4"><td>English</td><td><input type="number" class="neb-th" min="0" max="75"></td><td><input type="number" class="neb-in" min="0" max="25"></td></tr>
+                <tr data-credit="5"><td>Business Studies / Maths</td><td><input type="number" class="neb-th" min="0" max="75"></td><td><input type="number" class="neb-in" min="0" max="25"></td></tr>
+                <tr data-credit="5"><td>Account / Physics</td><td><input type="number" class="neb-th" min="0" max="75"></td><td><input type="number" class="neb-in" min="0" max="25"></td></tr>
+                <tr data-credit="5"><td>Economics / Chemistry</td><td><input type="number" class="neb-th" min="0" max="75"></td><td><input type="number" class="neb-in" min="0" max="25"></td></tr>
+                <tr data-credit="5"><td>Social / Biology</td><td><input type="number" class="neb-th" min="0" max="75"></td><td><input type="number" class="neb-in" min="0" max="25"></td></tr>
+                <tr data-credit="5"><td>Computer</td><td><input type="number" class="neb-th" min="0" max="75"></td><td><input type="number" class="neb-in" min="0" max="25"></td></tr>
+              </tbody>
+            </table>
           </div>
-          <button class="btn-outline small" id="gpaAddRow">+ Add Subject</button>
-          <button class="btn-primary small" id="gpaCalc">Calculate GPA</button>
+
+          <!-- GRADES MODE -->
+          <div class="gpa-table-container" id="gpa-grades-table">
+            <table class="neb-table">
+              <thead>
+                <tr>
+                  <th>Subject</th>
+                  <th>Theory Grade</th>
+                  <th>Practical Grade</th>
+                </tr>
+              </thead>
+              <tbody id="gpaGradesRows">
+                <!-- Selects will be injected via JS to save space -->
+                <tr data-credit="3"><td>Nepali</td><td class="grade-cell th"></td><td class="grade-cell pr"></td></tr>
+                <tr data-credit="4"><td>English</td><td class="grade-cell th"></td><td class="grade-cell pr"></td></tr>
+                <tr data-credit="5"><td>Business Studies / Maths</td><td class="grade-cell th"></td><td class="grade-cell pr"></td></tr>
+                <tr data-credit="5"><td>Account / Physics</td><td class="grade-cell th"></td><td class="grade-cell pr"></td></tr>
+                <tr data-credit="5"><td>Economics / Chemistry</td><td class="grade-cell th"></td><td class="grade-cell pr"></td></tr>
+                <tr data-credit="5"><td>Social / Biology</td><td class="grade-cell th"></td><td class="grade-cell pr"></td></tr>
+                <tr data-credit="5"><td>Computer</td><td class="grade-cell th"></td><td class="grade-cell pr"></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <button class="btn-primary" id="gpaCalc" style="width: 100%; margin-top: 1rem; padding: 0.8rem; font-size: 1rem;">Calculate GPA</button>
           <div class="gpa-result" id="gpaResult"></div>
         </div>
       </div>
