@@ -268,9 +268,9 @@ document.querySelectorAll('.tab').forEach(tab => {
 
   function gradeSelectHTML() {
     const grades = [
-      ['4.0','A (4.0)'],['3.7','A- (3.7)'],['3.3','B+ (3.3)'],
-      ['3.0','B (3.0)'],['2.7','B- (2.7)'],['2.3','C+ (2.3)'],
-      ['2.0','C (2.0)'],['1.0','D (1.0)'],['0.0','F (0.0)']
+      ['4.0','A+ (4.0)'],['3.6','A (3.6)'],['3.2','B+ (3.2)'],
+      ['2.8','B (2.8)'],['2.4','C+ (2.4)'],['2.0','C (2.0)'],
+      ['1.6','D (1.6)'],['0.0','NG (0.0)']
     ];
     return '<select class="gpa-grade">' + grades.map(([v,l]) => `<option value="${v}">${l}</option>`).join('') + '</select>';
   }
@@ -299,11 +299,13 @@ document.querySelectorAll('.tab').forEach(tab => {
   calcBtn.addEventListener('click', () => {
     const rows = rowsEl.querySelectorAll('.gpa-row');
     let totalPoints = 0, totalCredits = 0;
+    let hasNG = false;
 
     rows.forEach(row => {
       const credit = parseFloat(row.querySelector('.gpa-credit').value);
       const grade  = parseFloat(row.querySelector('.gpa-grade').value);
       if (!isNaN(credit) && credit > 0) {
+        if (grade === 0.0) hasNG = true;
         totalPoints  += credit * grade;
         totalCredits += credit;
       }
@@ -316,24 +318,29 @@ document.querySelectorAll('.tab').forEach(tab => {
     }
 
     const gpa = (totalPoints / totalCredits).toFixed(2);
-    const letterGrade = gpa >= 3.7 ? 'A' : gpa >= 3.3 ? 'A-' : gpa >= 3.0 ? 'B+' :
-                        gpa >= 2.7 ? 'B'  : gpa >= 2.3 ? 'B-' : gpa >= 2.0 ? 'C+' :
-                        gpa >= 1.0 ? 'C'  : 'F';
+    let letterGrade;
+    if (hasNG) {
+      letterGrade = 'NG';
+    } else {
+      letterGrade = gpa >= 3.6 ? 'A+' : gpa >= 3.2 ? 'A' : gpa >= 2.8 ? 'B+' :
+                    gpa >= 2.4 ? 'B'  : gpa >= 2.0 ? 'C+' : gpa >= 1.6 ? 'C' :
+                    gpa > 0.0 ? 'D' : 'NG';
+    }
 
     resultEl.className = 'gpa-result show';
     resultEl.innerHTML = `
-      <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
-        <div>
-          <div style="font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;">Your GPA</div>
-          <div class="gpa-value">${gpa}</div>
+      <div class="neb-result-box">
+        <div class="neb-stat">
+          <span class="neb-label">Your GPA</span>
+          <span class="neb-val">${gpa}</span>
         </div>
-        <div>
-          <div style="font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;">Letter Grade</div>
-          <div class="gpa-value">${letterGrade}</div>
+        <div class="neb-stat highlight">
+          <span class="neb-label">Letter Grade</span>
+          <span class="neb-val grade-${letterGrade.replace('+', 'plus')}">${letterGrade}</span>
         </div>
-        <div>
-          <div style="font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;">Total Credits</div>
-          <div class="gpa-value">${totalCredits}</div>
+        <div class="neb-stat">
+          <span class="neb-label">Total Credits</span>
+          <span class="neb-val small">${totalCredits}</span>
         </div>
       </div>
     `;

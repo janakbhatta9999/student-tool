@@ -29,7 +29,7 @@
     </div>
     <div class="hero-cards">
       <div class="floating-card c1">⏱ timer</div>
-      <div class="floating-card c2">🎓 GPA Calc</div>
+      <div class="floating-card c2">🎓 NEB GPA</div>
       <div class="floating-card c3">🃏 Flashcards</div>
       <div class="floating-card c4">✅ Tasks</div>
     </div>
@@ -44,7 +44,7 @@
       <button class="tab active" data-tab="pomodoro">⏱ Pomodoro</button>
       <button class="tab" data-tab="todo">✅ To-Do List</button>
       <button class="tab" data-tab="wordcount">📝 Word Counter</button>
-      <button class="tab" data-tab="gpa">🎓 GPA Calc</button>
+      <button class="tab" data-tab="gpa">🎓 NEB GPA Calc</button>
       <button class="tab" data-tab="percent">🔢 % Calculator</button>
       <button class="tab" data-tab="flashcard">🃏 Flashcards</button>
       <button class="tab" data-tab="converter">📐 Unit Converter</button>
@@ -138,30 +138,29 @@
         </div>
       </div>
 
-      <!-- 4. GPA CALCULATOR -->
+      <!-- 4. NEB GPA CALCULATOR -->
       <div class="panel" id="panel-gpa">
         <div class="panel-header">
-          <h3>GPA Calculator</h3>
-          <p>Enter your subjects to calculate semester GPA.</p>
+          <h3>NEB +2 GPA Calculator</h3>
+          <p>Enter your subjects and credit hrs to calculate NEB GPA.</p>
         </div>
         <div class="gpa-wrap">
           <div class="gpa-table-header">
-            <span>Subject</span><span>Credits</span><span>Grade</span><span></span>
+            <span>Subject</span><span>Credit Hrs</span><span>Grade</span><span></span>
           </div>
           <div id="gpaRows">
             <div class="gpa-row">
               <input type="text" placeholder="Subject name" class="gpa-subject"/>
               <input type="number" placeholder="Credits" class="gpa-credit" min="1" max="6"/>
               <select class="gpa-grade">
-                <option value="4.0">A (4.0)</option>
-                <option value="3.7">A- (3.7)</option>
-                <option value="3.3">B+ (3.3)</option>
-                <option value="3.0">B (3.0)</option>
-                <option value="2.7">B- (2.7)</option>
-                <option value="2.3">C+ (2.3)</option>
+                <option value="4.0">A+ (4.0)</option>
+                <option value="3.6">A (3.6)</option>
+                <option value="3.2">B+ (3.2)</option>
+                <option value="2.8">B (2.8)</option>
+                <option value="2.4">C+ (2.4)</option>
                 <option value="2.0">C (2.0)</option>
-                <option value="1.0">D (1.0)</option>
-                <option value="0.0">F (0.0)</option>
+                <option value="1.6">D (1.6)</option>
+                <option value="0.0">NG (0.0)</option>
               </select>
               <button class="del-row">✕</button>
             </div>
