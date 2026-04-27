@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>StudyHub — Student Toolkit</title>
   <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;600&display=swap"
+    rel="stylesheet" />
 </head>
+
 <body>
 
   <!-- NAVBAR -->
@@ -23,7 +27,7 @@
     <div class="hero-bg-text">STUDY</div>
     <div class="hero-content">
       <span class="hero-tag">All-in-one for students</span>
-      <h1>Your <em>Academic</em><br/>Toolkit.</h1>
+      <h1>Your <em>Academic</em><br />Toolkit.</h1>
       <p>9 powerful tools designed to boost your focus, manage tasks, and ace your exams — all in one place.</p>
       <a href="#tools" class="btn-primary">Explore Tools ↓</a>
     </div>
@@ -45,6 +49,7 @@
       <button class="tab" data-tab="todo">✅ To-Do List</button>
       <button class="tab" data-tab="wordcount">📝 Word Counter</button>
       <button class="tab" data-tab="gpa">🎓 NEB GPA Calc</button>
+      <button class="tab" data-tab="sem-gpa">🎓 Sem GPA Calc</button>
       <button class="tab" data-tab="percent">🔢 % Calculator</button>
       <button class="tab" data-tab="flashcard">🃏 Flashcards</button>
       <button class="tab" data-tab="converter">📐 Unit Converter</button>
@@ -73,8 +78,8 @@
           </div>
           <div class="clock-ring">
             <svg viewBox="0 0 200 200" class="ring-svg">
-              <circle cx="100" cy="100" r="88" class="ring-bg"/>
-              <circle cx="100" cy="100" r="88" class="ring-progress" id="ringProgress"/>
+              <circle cx="100" cy="100" r="88" class="ring-bg" />
+              <circle cx="100" cy="100" r="88" class="ring-progress" id="ringProgress" />
             </svg>
             <div class="clock-display">
               <span id="timerDisplay">25:00</span>
@@ -141,11 +146,130 @@
       <!-- 4. NEB GPA CALCULATOR -->
       <div class="panel" id="panel-gpa">
         <div class="panel-header">
+          <h3>NEB +2 GPA Calculator</h3>
+          <p>Calculate your GPA using Marks or Expected Grades.</p>
+        </div>
+        <div class="gpa-wrap">
+          <div class="gpa-mode-toggle">
+            <button class="gpa-mode-btn active" data-mode="marks">📝 Enter Marks</button>
+            <button class="gpa-mode-btn" data-mode="grades">🎯 Expected Grades</button>
+          </div>
+
+          <!-- MARKS MODE -->
+          <div class="gpa-table-container active" id="gpa-marks-table">
+            <table class="neb-table">
+              <thead>
+                <tr>
+                  <th>Subject</th>
+                  <th>Theory Marks</th>
+                  <th>Internal Marks</th>
+                </tr>
+              </thead>
+              <tbody id="gpaMarksRows">
+                <tr data-credit="2" data-th-max="75" data-in-max="25">
+                  <td>Nepali</td>
+                  <td><input type="number" class="neb-th" min="0" max="75" placeholder="Max 75"></td>
+                  <td><input type="number" class="neb-in" min="0" max="25" placeholder="Max 25"></td>
+                </tr>
+                <tr data-credit="3" data-th-max="75" data-in-max="25">
+                  <td>English</td>
+                  <td><input type="number" class="neb-th" min="0" max="75" placeholder="Max 75"></td>
+                  <td><input type="number" class="neb-in" min="0" max="25" placeholder="Max 25"></td>
+                </tr>
+                <tr data-credit="5" data-th-max="75" data-in-max="25">
+                  <td>Business Studies / Maths</td>
+                  <td><input type="number" class="neb-th" min="0" max="75" placeholder="Max 75"></td>
+                  <td><input type="number" class="neb-in" min="0" max="25" placeholder="Max 25"></td>
+                </tr>
+                <tr data-credit="5" data-th-max="75" data-in-max="25">
+                  <td>Account / Physics</td>
+                  <td><input type="number" class="neb-th" min="0" max="75" placeholder="Max 75"></td>
+                  <td><input type="number" class="neb-in" min="0" max="25" placeholder="Max 25"></td>
+                </tr>
+                <tr data-credit="5" data-th-max="75" data-in-max="25">
+                  <td>Economics / Chemistry</td>
+                  <td><input type="number" class="neb-th" min="0" max="75" placeholder="Max 75"></td>
+                  <td><input type="number" class="neb-in" min="0" max="25" placeholder="Max 25"></td>
+                </tr>
+                <tr data-credit="5" data-th-max="75" data-in-max="25">
+                  <td>Social / Biology</td>
+                  <td><input type="number" class="neb-th" min="0" max="75" placeholder="Max 75"></td>
+                  <td><input type="number" class="neb-in" min="0" max="25" placeholder="Max 25"></td>
+                </tr>
+                <tr data-credit="5" data-th-max="50" data-in-max="50">
+                  <td>Computer</td>
+                  <td><input type="number" class="neb-th" min="0" max="50" placeholder="Max 50"></td>
+                  <td><input type="number" class="neb-in" min="0" max="50" placeholder="Max 50"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- GRADES MODE -->
+          <div class="gpa-table-container" id="gpa-grades-table">
+            <table class="neb-table">
+              <thead>
+                <tr>
+                  <th>Subject</th>
+                  <th>Theory Grade</th>
+                  <th>Practical Grade</th>
+                </tr>
+              </thead>
+              <tbody id="gpaGradesRows">
+                <!-- Selects will be injected via JS to save space -->
+                <tr data-credit="2">
+                  <td>Nepali</td>
+                  <td class="grade-cell th"></td>
+                  <td class="grade-cell pr"></td>
+                </tr>
+                <tr data-credit="3">
+                  <td>English</td>
+                  <td class="grade-cell th"></td>
+                  <td class="grade-cell pr"></td>
+                </tr>
+                <tr data-credit="5">
+                  <td>Business Studies / Maths</td>
+                  <td class="grade-cell th"></td>
+                  <td class="grade-cell pr"></td>
+                </tr>
+                <tr data-credit="5">
+                  <td>Account / Physics</td>
+                  <td class="grade-cell th"></td>
+                  <td class="grade-cell pr"></td>
+                </tr>
+                <tr data-credit="5">
+                  <td>Economics / Chemistry</td>
+                  <td class="grade-cell th"></td>
+                  <td class="grade-cell pr"></td>
+                </tr>
+                <tr data-credit="5">
+                  <td>Social / Biology</td>
+                  <td class="grade-cell th"></td>
+                  <td class="grade-cell pr"></td>
+                </tr>
+                <tr data-credit="5">
+                  <td>Computer</td>
+                  <td class="grade-cell th"></td>
+                  <td class="grade-cell pr"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <button class="btn-primary" id="gpaCalc"
+            style="width: 100%; margin-top: 1rem; padding: 0.8rem; font-size: 1rem;">Calculate GPA</button>
+          <div class="gpa-result" id="gpaResult"></div>
+        </div>
+      </div>
+
+      <!-- 4.5. SEMESTER GPA CALCULATOR -->
+      <div class="panel" id="panel-sem-gpa">
+        <div class="panel-header">
           <h3>Semester GPA Calculator</h3>
           <p>Calculate your GPA by entering credits, theory, and practical marks.</p>
         </div>
         <div class="gpa-wrap">
-          <div class="gpa-table-container active" id="gpa-dynamic-table" style="overflow-x: auto;">
+          <div class="gpa-table-container active" id="sem-gpa-dynamic-table" style="overflow-x: auto;">
             <table class="neb-table">
               <thead>
                 <tr>
@@ -156,7 +280,7 @@
                   <th></th>
                 </tr>
               </thead>
-              <tbody id="gpaDynamicRows">
+              <tbody id="semGpaDynamicRows">
                 <tr>
                   <td><input type="text" class="dyn-sub" placeholder="Subject 1"></td>
                   <td><input type="number" class="dyn-cred" min="0.5" step="0.5" value="3"></td>
@@ -199,9 +323,11 @@
             </table>
           </div>
 
-          <button class="btn-outline small" id="gpaAddRow" style="align-self: center; margin-top: 0.5rem; width: fit-content;">+ Add Subject</button>
-          <button class="btn-primary" id="gpaCalc" style="width: 100%; margin-top: 1rem; padding: 0.8rem; font-size: 1rem;">Calculate GPA</button>
-          <div class="gpa-result" id="gpaResult"></div>
+          <button class="btn-outline small" id="semGpaAddRow"
+            style="align-self: center; margin-top: 0.5rem; width: fit-content;">+ Add Subject</button>
+          <button class="btn-primary" id="semGpaCalc"
+            style="width: 100%; margin-top: 1rem; padding: 0.8rem; font-size: 1rem;">Calculate GPA</button>
+          <div class="gpa-result" id="semGpaResult"></div>
         </div>
       </div>
 
@@ -221,11 +347,11 @@
           <div class="pct-panel active" id="pct-marks">
             <div class="field-group">
               <label>Marks Obtained</label>
-              <input type="number" id="pctObtained" placeholder="e.g. 87"/>
+              <input type="number" id="pctObtained" placeholder="e.g. 87" />
             </div>
             <div class="field-group">
               <label>Total Marks</label>
-              <input type="number" id="pctTotal" placeholder="e.g. 100"/>
+              <input type="number" id="pctTotal" placeholder="e.g. 100" />
             </div>
             <button class="btn-primary small" id="pctMarksCalc">Calculate</button>
             <div class="pct-result" id="pctMarksResult"></div>
@@ -234,11 +360,11 @@
           <div class="pct-panel" id="pct-percent">
             <div class="field-group">
               <label>Percentage (%)</label>
-              <input type="number" id="pctPct" placeholder="e.g. 15"/>
+              <input type="number" id="pctPct" placeholder="e.g. 15" />
             </div>
             <div class="field-group">
               <label>Of Number</label>
-              <input type="number" id="pctNum" placeholder="e.g. 500"/>
+              <input type="number" id="pctNum" placeholder="e.g. 500" />
             </div>
             <button class="btn-primary small" id="pctPercentCalc">Calculate</button>
             <div class="pct-result" id="pctPercentResult"></div>
@@ -247,11 +373,11 @@
           <div class="pct-panel" id="pct-change">
             <div class="field-group">
               <label>Original Value</label>
-              <input type="number" id="pctOld" placeholder="e.g. 80"/>
+              <input type="number" id="pctOld" placeholder="e.g. 80" />
             </div>
             <div class="field-group">
               <label>New Value</label>
-              <input type="number" id="pctNew" placeholder="e.g. 95"/>
+              <input type="number" id="pctNew" placeholder="e.g. 95" />
             </div>
             <button class="btn-primary small" id="pctChangeCalc">Calculate</button>
             <div class="pct-result" id="pctChangeResult"></div>
@@ -267,8 +393,8 @@
         </div>
         <div class="flashcard-wrap">
           <div class="fc-create">
-            <input type="text" id="fcFront" placeholder="Question / Front side"/>
-            <input type="text" id="fcBack" placeholder="Answer / Back side"/>
+            <input type="text" id="fcFront" placeholder="Question / Front side" />
+            <input type="text" id="fcBack" placeholder="Answer / Back side" />
             <button class="btn-primary small" id="fcAdd">+ Add Card</button>
           </div>
           <div class="fc-viewer" id="fcViewer">
@@ -306,12 +432,12 @@
           </div>
           <div class="conv-inputs">
             <div class="conv-field">
-              <input type="number" id="convFrom" placeholder="Enter value"/>
+              <input type="number" id="convFrom" placeholder="Enter value" />
               <select id="convFromUnit"></select>
             </div>
             <button class="btn-round swap" id="convSwap">⇄</button>
             <div class="conv-field">
-              <input type="number" id="convTo" placeholder="Result" readonly/>
+              <input type="number" id="convTo" placeholder="Result" readonly />
               <select id="convToUnit"></select>
             </div>
           </div>
@@ -328,13 +454,18 @@
         </div>
         <div class="planner-wrap">
           <div class="planner-add">
-            <input type="text" id="plannerSubject" placeholder="Subject / Topic"/>
-            <input type="time" id="plannerTime"/>
+            <input type="text" id="plannerSubject" placeholder="Subject / Topic" />
+            <input type="time" id="plannerTime" />
             <select id="plannerDay">
-              <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
-              <option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option>
+              <option>Monday</option>
+              <option>Tuesday</option>
+              <option>Wednesday</option>
+              <option>Thursday</option>
+              <option>Friday</option>
+              <option>Saturday</option>
+              <option>Sunday</option>
             </select>
-            <input type="number" id="plannerDuration" placeholder="Duration (min)" min="15" step="15"/>
+            <input type="number" id="plannerDuration" placeholder="Duration (min)" min="15" step="15" />
             <button class="btn-primary small" id="plannerAdd">+ Add Session</button>
           </div>
           <div class="planner-grid" id="plannerGrid"></div>
@@ -351,7 +482,7 @@
           <div class="bmi-inputs">
             <div class="field-group">
               <label>Weight (kg)</label>
-              <input type="number" id="bmiWeight" placeholder="e.g. 65" min="1" max="500"/>
+              <input type="number" id="bmiWeight" placeholder="e.g. 65" min="1" max="500" />
             </div>
             <div class="field-group">
               <label>Height</label>
@@ -361,11 +492,11 @@
                   <button class="height-unit" data-unit="ft">ft/in</button>
                 </div>
                 <div id="bmiHeightCm" class="bmi-height-input active">
-                  <input type="number" id="bmiCm" placeholder="e.g. 170" min="50" max="300"/>
+                  <input type="number" id="bmiCm" placeholder="e.g. 170" min="50" max="300" />
                 </div>
                 <div id="bmiHeightFt" class="bmi-height-input">
-                  <input type="number" id="bmiFt" placeholder="Feet" min="1" max="9"/>
-                  <input type="number" id="bmiIn" placeholder="Inches" min="0" max="11"/>
+                  <input type="number" id="bmiFt" placeholder="Feet" min="1" max="9" />
+                  <input type="number" id="bmiIn" placeholder="Inches" min="0" max="11" />
                 </div>
               </div>
             </div>
@@ -373,7 +504,7 @@
           <div class="bmi-age-sex">
             <div class="field-group">
               <label>Age (optional)</label>
-              <input type="number" id="bmiAge" placeholder="e.g. 20" min="5" max="120"/>
+              <input type="number" id="bmiAge" placeholder="e.g. 20" min="5" max="120" />
             </div>
             <div class="field-group">
               <label>Sex (optional)</label>
@@ -430,4 +561,5 @@
 
   <script src="script.js"></script>
 </body>
+
 </html>

@@ -263,8 +263,166 @@ document.querySelectorAll('.tab').forEach(tab => {
 (function () {
   const resultEl = document.getElementById('gpaResult');
   const calcBtn = document.getElementById('gpaCalc');
-  const addRowBtn = document.getElementById('gpaAddRow');
-  const tbody = document.getElementById('gpaDynamicRows');
+  let currentMode = 'marks';
+
+  // Toggle mode
+  document.querySelectorAll('.gpa-mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.gpa-mode-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.gpa-table-container').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      currentMode = btn.dataset.mode;
+      document.getElementById('gpa-' + currentMode + '-table').classList.add('active');
+      resultEl.className = 'gpa-result';
+    });
+  });
+
+  // Inject grade selects into grades table
+  const selectHTML = `
+    <select class="neb-grade-select">
+      <option value="">-</option>
+      <option value="4.0">A+ (4.0)</option>
+      <option value="3.6">A (3.6)</option>
+      <option value="3.2">B+ (3.2)</option>
+      <option value="2.8">B (2.8)</option>
+      <option value="2.4">C+ (2.4)</option>
+      <option value="2.0">C (2.0)</option>
+      <option value="1.6">D (1.6)</option>
+      <option value="0.0">NG (0.0)</option>
+    </select>
+  `;
+  document.querySelectorAll('.grade-cell').forEach(cell => {
+    cell.innerHTML = selectHTML;
+  });
+
+  function getGradePointFromPercentage(pct) {
+    if (pct >= 90) return 4.0;
+    if (pct >= 80) return 3.6;
+    if (pct >= 70) return 3.2;
+    if (pct >= 60) return 2.8;
+    if (pct >= 50) return 2.4;
+    if (pct >= 40) return 2.0;
+    if (pct >= 35) return 1.6;
+    return 0.0;
+  }
+
+  calcBtn.addEventListener('click', () => {
+    let totalPoints = 0, totalCredits = 0;
+    let hasNG = false;
+    let anyValid = false;
+
+    if (currentMode === 'marks') {
+      const rows = document.querySelectorAll('#gpaMarksRows tr');
+      rows.forEach(row => {
+        const credit = parseFloat(row.dataset.credit);
+        const thMax = parseFloat(row.dataset.thMax) || 75;
+        const inMax = parseFloat(row.dataset.inMax) || 25;
+        const thVal = row.querySelector('.neb-th').value;
+        const inVal = row.querySelector('.neb-in').value;
+        if (thVal !== '' || inVal !== '') {
+          anyValid = true;
+          
+          let thGp = null;
+          let inGp = null;
+          let gp = 0;
+
+          if (thVal !== '') {
+            const th = parseFloat(thVal) || 0;
+            const thPct = (th / thMax) * 100;
+            thGp = getGradePointFromPercentage(thPct);
+            if (thGp === 0.0) hasNG = true;
+          }
+          if (inVal !== '') {
+            const inM = parseFloat(inVal) || 0;
+            const inPct = (inM / inMax) * 100;
+            inGp = getGradePointFromPercentage(inPct);
+            if (inGp === 0.0) hasNG = true;
+          }
+
+          if (thGp !== null && inGp !== null) {
+            const totalMax = thMax + inMax;
+            gp = (thGp * (thMax / totalMax)) + (inGp * (inMax / totalMax));
+          } else if (thGp !== null) {
+            gp = thGp;
+          } else if (inGp !== null) {
+            gp = inGp;
+          }
+
+          totalPoints += credit * gp;
+          totalCredits += credit;
+        }
+      });
+    } else {
+      const rows = document.querySelectorAll('#gpaGradesRows tr');
+      rows.forEach(row => {
+        const credit = parseFloat(row.dataset.credit);
+        const thSel = row.querySelector('.grade-cell.th select').value;
+        const prSel = row.querySelector('.grade-cell.pr select').value;
+        
+        if (thSel !== '' || prSel !== '') {
+          anyValid = true;
+          let gp;
+          
+          if (thSel !== '' && prSel !== '') {
+            // Assume 75% theory, 25% practical for simplicity when combining grades
+            gp = (parseFloat(thSel) * 0.75) + (parseFloat(prSel) * 0.25);
+            if (parseFloat(thSel) === 0.0 || parseFloat(prSel) === 0.0) hasNG = true;
+          } else {
+            // If only one is provided, treat it as the total subject grade
+            gp = parseFloat(thSel !== '' ? thSel : prSel);
+            if (gp === 0.0) hasNG = true;
+          }
+          
+          totalPoints += credit * gp;
+          totalCredits += credit;
+        }
+      });
+    }
+
+    if (!anyValid || totalCredits === 0) {
+      resultEl.className = 'gpa-result show';
+      resultEl.innerHTML = `<span style="color:var(--rose)">Please enter marks or grades.</span>`;
+      return;
+    }
+
+    const gpa = (totalPoints / totalCredits).toFixed(2);
+    let letterGrade;
+    if (hasNG) {
+      letterGrade = 'NG';
+    } else {
+      letterGrade = gpa >= 3.6 ? 'A+' : gpa >= 3.2 ? 'A' : gpa >= 2.8 ? 'B+' :
+                    gpa >= 2.4 ? 'B'  : gpa >= 2.0 ? 'C+' : gpa >= 1.6 ? 'C' :
+                    gpa > 0.0 ? 'D' : 'NG';
+    }
+
+    resultEl.className = 'gpa-result show';
+    resultEl.innerHTML = `
+      <div class="neb-result-box">
+        <div class="neb-stat">
+          <span class="neb-label">Your GPA</span>
+          <span class="neb-val">${gpa}</span>
+        </div>
+        <div class="neb-stat highlight">
+          <span class="neb-label">Letter Grade</span>
+          <span class="neb-val grade-${letterGrade.replace('+', 'plus')}">${letterGrade}</span>
+        </div>
+        <div class="neb-stat">
+          <span class="neb-label">Total Credits</span>
+          <span class="neb-val small">${totalCredits}</span>
+        </div>
+      </div>
+    `;
+  });
+})();
+
+// =============================================
+// 4.5 SEMESTER GPA CALCULATOR
+// =============================================
+(function () {
+  const resultEl = document.getElementById('semGpaResult');
+  const calcBtn = document.getElementById('semGpaCalc');
+  const addRowBtn = document.getElementById('semGpaAddRow');
+  const tbody = document.getElementById('semGpaDynamicRows');
 
   // Add row dynamically
   if (addRowBtn && tbody) {
@@ -312,89 +470,91 @@ document.querySelectorAll('.tab').forEach(tab => {
     return 0.0;
   }
 
-  calcBtn.addEventListener('click', () => {
-    let totalPoints = 0, totalCredits = 0;
-    let hasNG = false;
-    let anyValid = false;
+  if (calcBtn) {
+    calcBtn.addEventListener('click', () => {
+      let totalPoints = 0, totalCredits = 0;
+      let hasNG = false;
+      let anyValid = false;
 
-    const rows = document.querySelectorAll('#gpaDynamicRows tr');
-    rows.forEach(row => {
-      const credit = parseFloat(row.querySelector('.dyn-cred').value) || 0;
-      if (credit <= 0) return;
+      const rows = document.querySelectorAll('#semGpaDynamicRows tr');
+      rows.forEach(row => {
+        const credit = parseFloat(row.querySelector('.dyn-cred').value) || 0;
+        if (credit <= 0) return;
 
-      const thObtInput = row.querySelector('.dyn-th-obt').value;
-      const thMaxInput = row.querySelector('.dyn-th-max').value;
-      const prObtInput = row.querySelector('.dyn-pr-obt').value;
-      const prMaxInput = row.querySelector('.dyn-pr-max').value;
+        const thObtInput = row.querySelector('.dyn-th-obt').value;
+        const thMaxInput = row.querySelector('.dyn-th-max').value;
+        const prObtInput = row.querySelector('.dyn-pr-obt').value;
+        const prMaxInput = row.querySelector('.dyn-pr-max').value;
 
-      if (thObtInput !== '' || prObtInput !== '') {
-        anyValid = true;
-        let thGp = null, inGp = null, gp = 0;
-        let thMax = parseFloat(thMaxInput) || 0;
-        let prMax = parseFloat(prMaxInput) || 0;
+        if (thObtInput !== '' || prObtInput !== '') {
+          anyValid = true;
+          let thGp = null, inGp = null, gp = 0;
+          let thMax = parseFloat(thMaxInput) || 0;
+          let prMax = parseFloat(prMaxInput) || 0;
 
-        if (thObtInput !== '' && thMax > 0) {
-          const th = parseFloat(thObtInput) || 0;
-          const thPct = (th / thMax) * 100;
-          thGp = getGradePointFromPercentage(thPct);
-          if (thGp === 0.0) hasNG = true;
+          if (thObtInput !== '' && thMax > 0) {
+            const th = parseFloat(thObtInput) || 0;
+            const thPct = (th / thMax) * 100;
+            thGp = getGradePointFromPercentage(thPct);
+            if (thGp === 0.0) hasNG = true;
+          }
+
+          if (prObtInput !== '' && prMax > 0) {
+            const pr = parseFloat(prObtInput) || 0;
+            const prPct = (pr / prMax) * 100;
+            inGp = getGradePointFromPercentage(prPct);
+            if (inGp === 0.0) hasNG = true;
+          }
+
+          if (thGp !== null && inGp !== null) {
+            const totalMax = thMax + prMax;
+            gp = (thGp * (thMax / totalMax)) + (inGp * (prMax / totalMax));
+          } else if (thGp !== null) {
+            gp = thGp;
+          } else if (inGp !== null) {
+            gp = inGp;
+          }
+
+          totalPoints += credit * gp;
+          totalCredits += credit;
         }
+      });
 
-        if (prObtInput !== '' && prMax > 0) {
-          const pr = parseFloat(prObtInput) || 0;
-          const prPct = (pr / prMax) * 100;
-          inGp = getGradePointFromPercentage(prPct);
-          if (inGp === 0.0) hasNG = true;
-        }
-
-        if (thGp !== null && inGp !== null) {
-          const totalMax = thMax + prMax;
-          gp = (thGp * (thMax / totalMax)) + (inGp * (prMax / totalMax));
-        } else if (thGp !== null) {
-          gp = thGp;
-        } else if (inGp !== null) {
-          gp = inGp;
-        }
-
-        totalPoints += credit * gp;
-        totalCredits += credit;
+      if (!anyValid || totalCredits === 0) {
+        resultEl.className = 'gpa-result show';
+        resultEl.innerHTML = `<span style="color:var(--rose)">Please enter obtained marks for at least one subject.</span>`;
+        return;
       }
-    });
 
-    if (!anyValid || totalCredits === 0) {
+      const gpa = (totalPoints / totalCredits).toFixed(2);
+      let letterGrade;
+      if (hasNG) {
+        letterGrade = 'NG';
+      } else {
+        letterGrade = gpa >= 3.6 ? 'A+' : gpa >= 3.2 ? 'A' : gpa >= 2.8 ? 'B+' :
+                      gpa >= 2.4 ? 'B'  : gpa >= 2.0 ? 'C+' : gpa >= 1.6 ? 'C' :
+                      gpa > 0.0 ? 'D' : 'NG';
+      }
+
       resultEl.className = 'gpa-result show';
-      resultEl.innerHTML = `<span style="color:var(--rose)">Please enter obtained marks for at least one subject.</span>`;
-      return;
-    }
-
-    const gpa = (totalPoints / totalCredits).toFixed(2);
-    let letterGrade;
-    if (hasNG) {
-      letterGrade = 'NG';
-    } else {
-      letterGrade = gpa >= 3.6 ? 'A+' : gpa >= 3.2 ? 'A' : gpa >= 2.8 ? 'B+' :
-                    gpa >= 2.4 ? 'B'  : gpa >= 2.0 ? 'C+' : gpa >= 1.6 ? 'C' :
-                    gpa > 0.0 ? 'D' : 'NG';
-    }
-
-    resultEl.className = 'gpa-result show';
-    resultEl.innerHTML = `
-      <div class="neb-result-box">
-        <div class="neb-stat">
-          <span class="neb-label">Your GPA</span>
-          <span class="neb-val">${gpa}</span>
+      resultEl.innerHTML = `
+        <div class="neb-result-box">
+          <div class="neb-stat">
+            <span class="neb-label">Your GPA</span>
+            <span class="neb-val">${gpa}</span>
+          </div>
+          <div class="neb-stat highlight">
+            <span class="neb-label">Letter Grade</span>
+            <span class="neb-val grade-${letterGrade.replace('+', 'plus')}">${letterGrade}</span>
+          </div>
+          <div class="neb-stat">
+            <span class="neb-label">Total Credits</span>
+            <span class="neb-val small">${totalCredits}</span>
+          </div>
         </div>
-        <div class="neb-stat highlight">
-          <span class="neb-label">Letter Grade</span>
-          <span class="neb-val grade-${letterGrade.replace('+', 'plus')}">${letterGrade}</span>
-        </div>
-        <div class="neb-stat">
-          <span class="neb-label">Total Credits</span>
-          <span class="neb-val small">${totalCredits}</span>
-        </div>
-      </div>
-    `;
-  });
+      `;
+    });
+  }
 })();
 
 
