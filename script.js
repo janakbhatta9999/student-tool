@@ -295,15 +295,14 @@ document.querySelectorAll('.tab').forEach(tab => {
     cell.innerHTML = selectHTML;
   });
 
-  function getGradePointFromMarks(th, inMarks) {
-    const total = th + inMarks;
-    if (total >= 90) return 4.0;
-    if (total >= 80) return 3.6;
-    if (total >= 70) return 3.2;
-    if (total >= 60) return 2.8;
-    if (total >= 50) return 2.4;
-    if (total >= 40) return 2.0;
-    if (total >= 35) return 1.6;
+  function getGradePointFromPercentage(pct) {
+    if (pct >= 90) return 4.0;
+    if (pct >= 80) return 3.6;
+    if (pct >= 70) return 3.2;
+    if (pct >= 60) return 2.8;
+    if (pct >= 50) return 2.4;
+    if (pct >= 40) return 2.0;
+    if (pct >= 35) return 1.6;
     return 0.0;
   }
 
@@ -316,14 +315,39 @@ document.querySelectorAll('.tab').forEach(tab => {
       const rows = document.querySelectorAll('#gpaMarksRows tr');
       rows.forEach(row => {
         const credit = parseFloat(row.dataset.credit);
+        const thMax = parseFloat(row.dataset.thMax) || 75;
+        const inMax = parseFloat(row.dataset.inMax) || 25;
         const thVal = row.querySelector('.neb-th').value;
         const inVal = row.querySelector('.neb-in').value;
         if (thVal !== '' || inVal !== '') {
           anyValid = true;
-          const th = parseFloat(thVal) || 0;
-          const inM = parseFloat(inVal) || 0;
-          const gp = getGradePointFromMarks(th, inM);
-          if (gp === 0.0) hasNG = true;
+          
+          let thGp = null;
+          let inGp = null;
+          let gp = 0;
+
+          if (thVal !== '') {
+            const th = parseFloat(thVal) || 0;
+            const thPct = (th / thMax) * 100;
+            thGp = getGradePointFromPercentage(thPct);
+            if (thGp === 0.0) hasNG = true;
+          }
+          if (inVal !== '') {
+            const inM = parseFloat(inVal) || 0;
+            const inPct = (inM / inMax) * 100;
+            inGp = getGradePointFromPercentage(inPct);
+            if (inGp === 0.0) hasNG = true;
+          }
+
+          if (thGp !== null && inGp !== null) {
+            const totalMax = thMax + inMax;
+            gp = (thGp * (thMax / totalMax)) + (inGp * (inMax / totalMax));
+          } else if (thGp !== null) {
+            gp = thGp;
+          } else if (inGp !== null) {
+            gp = inGp;
+          }
+
           totalPoints += credit * gp;
           totalCredits += credit;
         }
