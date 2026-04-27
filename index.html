@@ -141,60 +141,65 @@
       <!-- 4. NEB GPA CALCULATOR -->
       <div class="panel" id="panel-gpa">
         <div class="panel-header">
-          <h3>NEB +2 GPA Calculator</h3>
-          <p>Calculate your GPA using Marks or Expected Grades.</p>
+          <h3>Semester GPA Calculator</h3>
+          <p>Calculate your GPA by entering credits, theory, and practical marks.</p>
         </div>
         <div class="gpa-wrap">
-          <div class="gpa-mode-toggle">
-            <button class="gpa-mode-btn active" data-mode="marks">📝 Enter Marks</button>
-            <button class="gpa-mode-btn" data-mode="grades">🎯 Expected Grades</button>
-          </div>
-
-          <!-- MARKS MODE -->
-          <div class="gpa-table-container active" id="gpa-marks-table">
+          <div class="gpa-table-container active" id="gpa-dynamic-table" style="overflow-x: auto;">
             <table class="neb-table">
               <thead>
                 <tr>
                   <th>Subject</th>
-                  <th>Theory Marks</th>
-                  <th>Internal Marks</th>
+                  <th>Credits</th>
+                  <th>Theory (Obt / Max)</th>
+                  <th>Practical (Obt / Max)</th>
+                  <th></th>
                 </tr>
               </thead>
-              <tbody id="gpaMarksRows">
-                <tr data-credit="2" data-th-max="75" data-in-max="25"><td>Nepali</td><td><input type="number" class="neb-th" min="0" max="75" placeholder="Max 75"></td><td><input type="number" class="neb-in" min="0" max="25" placeholder="Max 25"></td></tr>
-                <tr data-credit="3" data-th-max="75" data-in-max="25"><td>English</td><td><input type="number" class="neb-th" min="0" max="75" placeholder="Max 75"></td><td><input type="number" class="neb-in" min="0" max="25" placeholder="Max 25"></td></tr>
-                <tr data-credit="5" data-th-max="75" data-in-max="25"><td>Business Studies / Maths</td><td><input type="number" class="neb-th" min="0" max="75" placeholder="Max 75"></td><td><input type="number" class="neb-in" min="0" max="25" placeholder="Max 25"></td></tr>
-                <tr data-credit="5" data-th-max="75" data-in-max="25"><td>Account / Physics</td><td><input type="number" class="neb-th" min="0" max="75" placeholder="Max 75"></td><td><input type="number" class="neb-in" min="0" max="25" placeholder="Max 25"></td></tr>
-                <tr data-credit="5" data-th-max="75" data-in-max="25"><td>Economics / Chemistry</td><td><input type="number" class="neb-th" min="0" max="75" placeholder="Max 75"></td><td><input type="number" class="neb-in" min="0" max="25" placeholder="Max 25"></td></tr>
-                <tr data-credit="5" data-th-max="75" data-in-max="25"><td>Social / Biology</td><td><input type="number" class="neb-th" min="0" max="75" placeholder="Max 75"></td><td><input type="number" class="neb-in" min="0" max="25" placeholder="Max 25"></td></tr>
-                <tr data-credit="5" data-th-max="50" data-in-max="50"><td>Computer</td><td><input type="number" class="neb-th" min="0" max="50" placeholder="Max 50"></td><td><input type="number" class="neb-in" min="0" max="50" placeholder="Max 50"></td></tr>
-              </tbody>
-            </table>
-          </div>
-
-          <!-- GRADES MODE -->
-          <div class="gpa-table-container" id="gpa-grades-table">
-            <table class="neb-table">
-              <thead>
+              <tbody id="gpaDynamicRows">
                 <tr>
-                  <th>Subject</th>
-                  <th>Theory Grade</th>
-                  <th>Practical Grade</th>
+                  <td><input type="text" class="dyn-sub" placeholder="Subject 1"></td>
+                  <td><input type="number" class="dyn-cred" min="0.5" step="0.5" value="3"></td>
+                  <td>
+                    <div class="marks-group">
+                      <input type="number" class="dyn-th-obt" placeholder="Obt" min="0">
+                      <span class="marks-sep">/</span>
+                      <input type="number" class="dyn-th-max" placeholder="Max" value="75" min="1">
+                    </div>
+                  </td>
+                  <td>
+                    <div class="marks-group">
+                      <input type="number" class="dyn-pr-obt" placeholder="Obt" min="0">
+                      <span class="marks-sep">/</span>
+                      <input type="number" class="dyn-pr-max" placeholder="Max" value="25" min="0">
+                    </div>
+                  </td>
+                  <td><button class="link-btn danger del-row">✕</button></td>
                 </tr>
-              </thead>
-              <tbody id="gpaGradesRows">
-                <!-- Selects will be injected via JS to save space -->
-                <tr data-credit="2"><td>Nepali</td><td class="grade-cell th"></td><td class="grade-cell pr"></td></tr>
-                <tr data-credit="3"><td>English</td><td class="grade-cell th"></td><td class="grade-cell pr"></td></tr>
-                <tr data-credit="5"><td>Business Studies / Maths</td><td class="grade-cell th"></td><td class="grade-cell pr"></td></tr>
-                <tr data-credit="5"><td>Account / Physics</td><td class="grade-cell th"></td><td class="grade-cell pr"></td></tr>
-                <tr data-credit="5"><td>Economics / Chemistry</td><td class="grade-cell th"></td><td class="grade-cell pr"></td></tr>
-                <tr data-credit="5"><td>Social / Biology</td><td class="grade-cell th"></td><td class="grade-cell pr"></td></tr>
-                <tr data-credit="5"><td>Computer</td><td class="grade-cell th"></td><td class="grade-cell pr"></td></tr>
+                <tr>
+                  <td><input type="text" class="dyn-sub" placeholder="Subject 2"></td>
+                  <td><input type="number" class="dyn-cred" min="0.5" step="0.5" value="3"></td>
+                  <td>
+                    <div class="marks-group">
+                      <input type="number" class="dyn-th-obt" placeholder="Obt" min="0">
+                      <span class="marks-sep">/</span>
+                      <input type="number" class="dyn-th-max" placeholder="Max" value="75" min="1">
+                    </div>
+                  </td>
+                  <td>
+                    <div class="marks-group">
+                      <input type="number" class="dyn-pr-obt" placeholder="Obt" min="0">
+                      <span class="marks-sep">/</span>
+                      <input type="number" class="dyn-pr-max" placeholder="Max" value="25" min="0">
+                    </div>
+                  </td>
+                  <td><button class="link-btn danger del-row">✕</button></td>
+                </tr>
               </tbody>
             </table>
           </div>
 
+          <button class="btn-outline small" id="gpaAddRow" style="align-self: center; margin-top: 0.5rem; width: fit-content;">+ Add Subject</button>
           <button class="btn-primary" id="gpaCalc" style="width: 100%; margin-top: 1rem; padding: 0.8rem; font-size: 1rem;">Calculate GPA</button>
           <div class="gpa-result" id="gpaResult"></div>
         </div>
