@@ -7,7 +7,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:         #0d0f14;
+  --bg:         #211032;
   --bg2:        #141720;
   --bg3:        #1c2030;
   --gold:       #e8b86d;
@@ -18,7 +18,7 @@
   --text-muted: #8a8a9a;
   --border:     #2a2d3e;
   --radius:     14px;
-  --shadow:     0 8px 32px rgba(0,0,0,0.5);
+  --shadow:     0 8px 32px rgba(61, 12, 175, 0.879);
 }
 
 html { scroll-behavior: smooth; }
@@ -307,6 +307,28 @@ body {
 
 /* ---- 1. POMODORO ---- */
 .pomodoro-wrap { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
+
+.pomo-custom-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+#pomoCustomInput {
+  width: 150px;
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+#pomoCustomInput:focus {
+  border-color: var(--gold);
+}
 
 .pomo-mode-btns { display: flex; gap: 0.6rem; }
 .pomo-mode {

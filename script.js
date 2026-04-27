@@ -26,6 +26,9 @@ document.querySelectorAll('.tab').forEach(tab => {
   const btnStart   = document.getElementById('pomoBtnStart');
   const btnReset   = document.getElementById('pomoBtnReset');
   const sessionEl  = document.getElementById('sessionCount');
+  const customInp  = document.getElementById('pomoCustomInput');
+  const customSet  = document.getElementById('pomoCustomSetBtn');
+  const pomoDesc   = document.getElementById('pomoDesc');
   const circumference = 2 * Math.PI * 88; // r=88
 
   ring.style.strokeDasharray = circumference;
@@ -85,11 +88,12 @@ document.querySelectorAll('.tab').forEach(tab => {
     render();
   });
 
-  document.querySelectorAll('.pomo-mode').forEach(btn => {
+  const modeBtns = document.querySelectorAll('.pomo-mode');
+  modeBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       clearInterval(interval);
       running = false;
-      document.querySelectorAll('.pomo-mode').forEach(b => b.classList.remove('active'));
+      modeBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       totalSeconds = parseInt(btn.dataset.min) * 60;
       remaining = totalSeconds;
@@ -98,6 +102,33 @@ document.querySelectorAll('.tab').forEach(tab => {
       render();
     });
   });
+
+  if (customSet && customInp) {
+    customSet.addEventListener('click', () => {
+      let focusMins = parseInt(customInp.value);
+      if (isNaN(focusMins) || focusMins < 1) {
+        alert("Please enter a valid number of minutes.");
+        return;
+      }
+      
+      // Auto-calculate breaks: short is 1/5th, long is 3/5ths
+      let shortMins = Math.max(1, Math.round(focusMins / 5));
+      let longMins = Math.max(1, Math.round(focusMins * 3 / 5));
+      
+      // Update the data-min values
+      modeBtns[0].dataset.min = focusMins;
+      modeBtns[1].dataset.min = shortMins;
+      modeBtns[2].dataset.min = longMins;
+      
+      if (pomoDesc) {
+        pomoDesc.textContent = `Focus for ${focusMins} min, then take a ${shortMins}-min break.`;
+      }
+      
+      // Trigger focus mode click to apply
+      modeBtns[0].click();
+      customInp.value = '';
+    });
+  }
 
   render();
 })();

@@ -28,7 +28,7 @@
       <a href="#tools" class="btn-primary">Explore Tools ↓</a>
     </div>
     <div class="hero-cards">
-      <div class="floating-card c1">⏱ Pomodoro</div>
+      <div class="floating-card c1">⏱ timer</div>
       <div class="floating-card c2">🎓 GPA Calc</div>
       <div class="floating-card c3">🃏 Flashcards</div>
       <div class="floating-card c4">✅ Tasks</div>
@@ -59,9 +59,13 @@
       <div class="panel active" id="panel-pomodoro">
         <div class="panel-header">
           <h3>Pomodoro Timer</h3>
-          <p>Focus for 25 min, then take a 5-min break.</p>
+          <p id="pomoDesc">Focus for 25 min, then take a 5-min break.</p>
         </div>
         <div class="pomodoro-wrap">
+          <div class="pomo-custom-row">
+            <input type="number" id="pomoCustomInput" placeholder="Custom focus (min)" min="1" max="240">
+            <button class="btn-primary small" id="pomoCustomSetBtn">Set Timer</button>
+          </div>
           <div class="pomo-mode-btns">
             <button class="pomo-mode active" data-min="25" data-label="Focus">🧠 Focus</button>
             <button class="pomo-mode" data-min="5" data-label="Short Break">☕ Short Break</button>
