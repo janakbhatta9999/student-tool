@@ -61,6 +61,7 @@
       <button class="tab" data-tab="converter">📐 Converter</button>
       <button class="tab" data-tab="planner">📅 Planner</button>
       <button class="tab" data-tab="bmi">⚖️ BMI</button>
+      <button class="tab" data-tab="emi">🏦 EMI Calc</button>
     </div>
 
     <!-- TOOL PANELS -->
@@ -417,9 +418,12 @@
               <button class="btn-round outline" id="fcNext">Next →</button>
             </div>
             <div class="fc-srs-controls" id="fcSrsControls" style="display:none; gap: 0.5rem; margin-top: 1rem;">
-              <button class="btn-primary small" id="fcHard" style="background: var(--rose); border: none; color: #fff;">Hard (1d)</button>
-              <button class="btn-primary small" id="fcGood" style="background: var(--gold); border: none; color: #000;">Good (3d)</button>
-              <button class="btn-primary small" id="fcEasy" style="background: var(--teal); border: none; color: #fff;">Easy (7d)</button>
+              <button class="btn-primary small" id="fcHard"
+                style="background: var(--rose); border: none; color: #fff;">Hard (1d)</button>
+              <button class="btn-primary small" id="fcGood"
+                style="background: var(--gold); border: none; color: #000;">Good (3d)</button>
+              <button class="btn-primary small" id="fcEasy"
+                style="background: var(--teal); border: none; color: #fff;">Easy (7d)</button>
             </div>
             <div class="fc-hint" id="fcHint" style="display:none;">Click card to flip</div>
           </div>
@@ -601,18 +605,38 @@
       <div class="panel" id="panel-sounds">
         <div class="panel-header">
           <h3>Focus Sounds</h3>
-          <p>Listen to Lo-Fi radio while you study.</p>
+          <p>Click any channel to open study music in a new tab.</p>
         </div>
         <div class="sounds-wrap">
-          <div class="lofi-player">
-            <!-- Lofi Girl Stream -->
-            <iframe width="100%" height="100%" src="https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=0&controls=1" 
-                    title="lofi hip hop radio - beats to relax/study to" 
-                    frameborder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                    allowfullscreen></iframe>
+          <div class="sounds-grid">
+            <a href="https://www.youtube.com/watch?v=jfKfPfyJRdk" target="_blank" class="sound-btn">
+              <span class="sound-icon">🎵</span>
+              Lofi Girl Radio
+            </a>
+            <a href="https://www.youtube.com/watch?v=4xDzrJKXOOY" target="_blank" class="sound-btn">
+              <span class="sound-icon">🌧️</span>
+              Rain + Jazz
+            </a>
+            <a href="https://www.youtube.com/watch?v=lTRiuFIWV54" target="_blank" class="sound-btn">
+              <span class="sound-icon">☕</span>
+              Coffee Shop
+            </a>
+            <a href="https://www.youtube.com/watch?v=1fueZCTYkpA" target="_blank" class="sound-btn">
+              <span class="sound-icon">🌊</span>
+              Ocean Waves
+            </a>
+            <a href="https://www.youtube.com/watch?v=rPjez8z61rI" target="_blank" class="sound-btn">
+              <span class="sound-icon">🔥</span>
+              Fireplace
+            </a>
+            <a href="https://www.youtube.com/watch?v=5qap5aO4i9A" target="_blank" class="sound-btn">
+              <span class="sound-icon">🧠</span>
+              Deep Focus
+            </a>
           </div>
-          <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem; text-align: center;">Press play to start the Lofi radio. It will run in the background while you use other tools.</p>
+          <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem; text-align: center;">
+            Opens in a new tab. Play it alongside your Pomodoro timer!
+          </p>
         </div>
       </div>
 
@@ -636,15 +660,26 @@
       <div class="panel" id="panel-notes">
         <div class="panel-header">
           <h3>Quick Notes</h3>
-          <p>Distraction-free Markdown notepad. Auto-saves locally.</p>
+          <p>Save multiple notes. Click any saved note to view or edit it.</p>
         </div>
         <div class="notes-wrap">
           <div class="notes-toolbar">
+            <button class="btn-primary small" id="noteNewBtn">+ New Note</button>
             <button class="btn-outline small active" id="noteEditBtn">Edit</button>
             <button class="btn-outline small" id="notePreviewBtn">Preview</button>
+            <button class="btn-primary small" id="noteSaveBtn">💾 Save</button>
+            <button class="btn-outline small" id="noteDownloadBtn">⬇ Download</button>
           </div>
-          <textarea id="noteInput" placeholder="# Notes&#10;&#10;Start typing here..."></textarea>
+          <input type="text" id="noteTitle" placeholder="Note title..."
+            style="background: var(--bg3); border: 1px solid var(--border); color: var(--gold); padding: 0.6rem 1rem; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 600; outline: none;" />
+          <textarea id="noteInput" placeholder="Start typing your note here..."></textarea>
           <div id="notePreview" class="note-preview" style="display:none;"></div>
+          <h4
+            style="color: var(--gold); font-size: 0.9rem; margin-top: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.4rem;">
+            📂 Saved Notes</h4>
+          <div class="saved-notes-list" id="savedNotesList">
+            <p style="color: var(--text-muted); font-size: 0.85rem;">No saved notes yet.</p>
+          </div>
         </div>
       </div>
 
@@ -670,6 +705,53 @@
           <div class="citation-result" id="citResult" style="display:none;">
             <p id="citText"></p>
             <button class="btn-outline small" id="citCopyBtn">Copy</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 15. EMI CALCULATOR -->
+      <div class="panel" id="panel-emi">
+        <div class="panel-header">
+          <h3>EMI Calculator</h3>
+          <p>Calculate your Equated Monthly Installment for any loan.</p>
+        </div>
+        <div class="emi-wrap">
+          <div class="emi-inputs">
+            <div class="field-group">
+              <label>Loan Amount (Rs.)</label>
+              <input type="number" id="emiPrincipal" placeholder="e.g. 500000" min="1" />
+            </div>
+            <div class="field-group">
+              <label>Interest Rate (% per year)</label>
+              <input type="number" id="emiRate" placeholder="e.g. 12" min="0" step="0.1" />
+            </div>
+            <div class="field-group">
+              <label>Loan Tenure</label>
+              <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <input type="number" id="emiTenure" placeholder="e.g. 5" min="1" style="flex:1;" />
+                <select id="emiTenureType" style="background: var(--bg3); border: 1px solid var(--border); color: var(--text); padding: 0.6rem; border-radius: 8px; font-family: 'DM Sans', sans-serif;">
+                  <option value="years">Years</option>
+                  <option value="months">Months</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <button class="btn-primary small" id="emiCalcBtn">Calculate EMI</button>
+          <div class="emi-result" id="emiResult" style="display:none;">
+            <div class="budget-overview">
+              <div class="budget-card balance">
+                <h4>Monthly EMI</h4>
+                <div class="amount" id="emiMonthly">Rs. 0</div>
+              </div>
+              <div class="budget-card income">
+                <h4>Total Interest</h4>
+                <div class="amount" id="emiInterest">Rs. 0</div>
+              </div>
+              <div class="budget-card expense">
+                <h4>Total Payment</h4>
+                <div class="amount" id="emiTotal">Rs. 0</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -1065,6 +1065,7 @@ input[type=number]::-webkit-inner-spin-button { opacity: 0.4; }
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
+  text-decoration: none;
 }
 .sound-btn:hover { border-color: var(--gold); background: var(--bg2); transform: translateY(-3px); }
 .sound-btn.active { border-color: var(--teal); color: var(--teal); background: rgba(78, 205, 196, 0.1); }
@@ -1087,7 +1088,9 @@ input[type=number]::-webkit-inner-spin-button { opacity: 0.4; }
 
 /* ---- 13. QUICK NOTES ---- */
 .notes-wrap { display: flex; flex-direction: column; gap: 0.8rem; }
-.notes-toolbar { display: flex; gap: 0.5rem; }
+.notes-toolbar { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+.saved-notes-list { display: flex; flex-direction: column; gap: 0; max-height: 250px; overflow-y: auto; padding-right: 5px; }
+.saved-notes-list > div:hover { border-color: var(--gold) !important; }
 #noteInput { background: var(--bg3); border: 1px solid var(--border); color: var(--text); padding: 1rem; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; resize: vertical; min-height: 250px; outline: none; line-height: 1.6; }
 #noteInput:focus { border-color: var(--gold); }
 .note-preview { background: var(--bg2); border: 1px solid var(--border); color: var(--text); padding: 1rem; border-radius: 8px; min-height: 250px; font-family: 'DM Sans', sans-serif; line-height: 1.6; overflow-y: auto; max-height: 500px; }
@@ -1103,6 +1106,10 @@ input[type=number]::-webkit-inner-spin-button { opacity: 0.4; }
 .citation-add input:focus, .citation-add select:focus { border-color: var(--gold); }
 .citation-result { background: var(--bg2); border: 1px solid var(--teal); padding: 1rem; border-radius: 8px; display: flex; flex-direction: column; gap: 0.8rem; align-items: flex-start; }
 .citation-result p { font-family: 'DM Sans', sans-serif; font-size: 0.95rem; line-height: 1.5; color: var(--text); padding-left: 1.5rem; text-indent: -1.5rem; }
+
+/* ---- 15. EMI CALCULATOR ---- */
+.emi-wrap { display: flex; flex-direction: column; gap: 1rem; }
+.emi-inputs { display: flex; flex-direction: column; gap: 0.8rem; }
 
 /* ---- RESPONSIVE ---- */
 @media (max-width: 700px) {

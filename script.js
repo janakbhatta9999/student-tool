@@ -641,24 +641,32 @@ document.querySelectorAll('.tab').forEach(tab => {
 
 
 // =============================================
-// 6. FLASHCARDS
+// 6. FLASHCARDS (with Spaced Repetition)
 // =============================================
 (function () {
-  let cards = [];
+  let cards = JSON.parse(localStorage.getItem('studyhub_flashcards')) || [];
   let current = 0;
 
-  const frontInput = document.getElementById('fcFront');
-  const backInput  = document.getElementById('fcBack');
-  const addBtn     = document.getElementById('fcAdd');
-  const flashcard  = document.getElementById('flashcard');
-  const fcInner    = document.getElementById('fcInner');
-  const fcFront    = document.getElementById('fcFrontDisplay');
-  const fcBack     = document.getElementById('fcBackDisplay');
-  const fcControls = document.getElementById('fcControls');
-  const fcCounter  = document.getElementById('fcCounter');
-  const fcEmpty    = document.getElementById('fcEmpty');
-  const fcHint     = document.getElementById('fcHint');
-  const clearBtn   = document.getElementById('fcClear');
+  const frontInput  = document.getElementById('fcFront');
+  const backInput   = document.getElementById('fcBack');
+  const addBtn      = document.getElementById('fcAdd');
+  const flashcard   = document.getElementById('flashcard');
+  const fcInner     = document.getElementById('fcInner');
+  const fcFront     = document.getElementById('fcFrontDisplay');
+  const fcBack      = document.getElementById('fcBackDisplay');
+  const fcControls  = document.getElementById('fcControls');
+  const fcCounter   = document.getElementById('fcCounter');
+  const fcEmpty     = document.getElementById('fcEmpty');
+  const fcHint      = document.getElementById('fcHint');
+  const clearBtn    = document.getElementById('fcClear');
+  const srsControls = document.getElementById('fcSrsControls');
+
+  function save() { localStorage.setItem('studyhub_flashcards', JSON.stringify(cards)); }
+
+  // Sort cards so harder ones (higher weight) appear first
+  function sortByPriority() {
+    cards.sort((a, b) => (b.weight || 3) - (a.weight || 3));
+  }
 
   function renderCard() {
     if (cards.length === 0) {
@@ -666,26 +674,41 @@ document.querySelectorAll('.tab').forEach(tab => {
       fcControls.style.display = 'none';
       fcHint.style.display     = 'none';
       fcEmpty.style.display    = 'block';
+      if (srsControls) srsControls.style.display = 'none';
       return;
     }
     fcEmpty.style.display    = 'none';
     flashcard.style.display  = 'block';
     fcControls.style.display = 'flex';
     fcHint.style.display     = 'block';
+    if (srsControls) srsControls.style.display = 'flex';
     fcInner.classList.remove('flipped');
     fcFront.textContent = cards[current].front;
     fcBack.textContent  = cards[current].back;
     fcCounter.textContent = `${current + 1} / ${cards.length}`;
   }
 
+  function rateCard(difficulty) {
+    if (cards.length === 0) return;
+    // difficulty: 'hard' = weight stays high, 'good' = medium, 'easy' = drops low
+    if (difficulty === 'hard') cards[current].weight = Math.min(10, (cards[current].weight || 3) + 2);
+    else if (difficulty === 'good') cards[current].weight = Math.max(1, (cards[current].weight || 3));
+    else cards[current].weight = Math.max(1, (cards[current].weight || 3) - 2);
+    save();
+    sortByPriority();
+    current = (current + 1) % cards.length;
+    renderCard();
+  }
+
   addBtn.addEventListener('click', () => {
     const f = frontInput.value.trim();
     const b = backInput.value.trim();
     if (!f || !b) return alert('Please fill both front and back!');
-    cards.push({ front: f, back: b });
+    cards.push({ front: f, back: b, weight: 5 });
     frontInput.value = '';
     backInput.value  = '';
     current = cards.length - 1;
+    save();
     renderCard();
   });
 
@@ -702,15 +725,24 @@ document.querySelectorAll('.tab').forEach(tab => {
     renderCard();
   });
 
+  // SRS buttons
+  if (document.getElementById('fcHard')) {
+    document.getElementById('fcHard').addEventListener('click', () => rateCard('hard'));
+    document.getElementById('fcGood').addEventListener('click', () => rateCard('good'));
+    document.getElementById('fcEasy').addEventListener('click', () => rateCard('easy'));
+  }
+
   clearBtn.addEventListener('click', () => {
     if (cards.length === 0) return;
     if (confirm('Clear all flashcards?')) {
       cards = [];
       current = 0;
+      save();
       renderCard();
     }
   });
 
+  sortByPriority();
   renderCard();
 })();
 
@@ -1119,3 +1151,329 @@ function fireConfetti() {
   }
   update();
 }
+
+// =============================================
+// 12. ASSIGNMENT DEADLINE TRACKER
+// =============================================
+(function () {
+  const dlName   = document.getElementById('dlName');
+  const dlDate   = document.getElementById('dlDate');
+  const dlAddBtn = document.getElementById('dlAddBtn');
+  const dlList   = document.getElementById('dlList');
+
+  if (!dlName) return;
+
+  let deadlines = JSON.parse(localStorage.getItem('studyhub_deadlines')) || [];
+
+  function save() { localStorage.setItem('studyhub_deadlines', JSON.stringify(deadlines)); }
+
+  function daysUntil(dateStr) {
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    const due = new Date(dateStr);
+    return Math.ceil((due - now) / (1000 * 60 * 60 * 24));
+  }
+
+  function render() {
+    deadlines.sort((a, b) => new Date(a.date) - new Date(b.date));
+    dlList.innerHTML = '';
+
+    if (deadlines.length === 0) {
+      dlList.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem;text-align:center;padding:1rem;">No deadlines added yet.</p>';
+      return;
+    }
+
+    deadlines.forEach((d, i) => {
+      const days = daysUntil(d.date);
+      let badgeClass, badgeText, borderColor;
+
+      if (days < 0) {
+        badgeClass = 'deadline-urgent'; badgeText = 'OVERDUE'; borderColor = 'var(--rose)';
+      } else if (days <= 2) {
+        badgeClass = 'deadline-urgent';
+        badgeText = days === 0 ? 'DUE TODAY' : days === 1 ? 'TOMORROW' : `${days} DAYS`;
+        borderColor = 'var(--rose)';
+      } else if (days <= 7) {
+        badgeClass = 'deadline-soon'; badgeText = `${days} DAYS`; borderColor = '#f5c542';
+      } else {
+        badgeClass = 'deadline-later'; badgeText = `${days} DAYS`; borderColor = 'var(--teal)';
+      }
+
+      const item = document.createElement('div');
+      item.className = 'deadline-item';
+      item.style.borderLeftColor = borderColor;
+      item.innerHTML = `
+        <div class="deadline-item-info">
+          <span class="deadline-item-name">${d.name}</span>
+          <span class="deadline-item-date">Due: ${new Date(d.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</span>
+        </div>
+        <span class="deadline-badge ${badgeClass}">${badgeText}</span>
+        <button class="budget-del" data-idx="${i}">✕</button>
+      `;
+      dlList.appendChild(item);
+    });
+
+    dlList.querySelectorAll('.budget-del').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        deadlines.splice(parseInt(e.target.dataset.idx), 1);
+        save();
+        render();
+      });
+    });
+  }
+
+  dlAddBtn.addEventListener('click', () => {
+    const name = dlName.value.trim();
+    const date = dlDate.value;
+    if (!name || !date) return alert('Please enter both a name and a date.');
+    deadlines.push({ name, date });
+    dlName.value = '';
+    dlDate.value = '';
+    save();
+    render();
+  });
+
+  render();
+})();
+
+
+// =============================================
+// 13. QUICK NOTES (Multiple Saved Notes)
+// =============================================
+(function () {
+  const noteTitle      = document.getElementById('noteTitle');
+  const noteInput      = document.getElementById('noteInput');
+  const notePreview    = document.getElementById('notePreview');
+  const noteSaveBtn    = document.getElementById('noteSaveBtn');
+  const noteNewBtn     = document.getElementById('noteNewBtn');
+  const noteEditBtn    = document.getElementById('noteEditBtn');
+  const notePreviewBtn = document.getElementById('notePreviewBtn');
+  const noteDownloadBtn = document.getElementById('noteDownloadBtn');
+  const savedNotesList  = document.getElementById('savedNotesList');
+
+  if (!noteInput) return;
+
+  let notes = JSON.parse(localStorage.getItem('studyhub_notes')) || [];
+  let editingIdx = -1;
+
+  function save() { localStorage.setItem('studyhub_notes', JSON.stringify(notes)); }
+
+  function markdownToHtml(md) {
+    let html = md
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+      .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+      .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      .replace(/`(.+?)`/g, '<code>$1</code>')
+      .replace(/^- (.+)$/gm, '<li>$1</li>')
+      .replace(/\n/g, '<br/>');
+    html = html.replace(/((<li>.*?<\/li><br\/>?)+)/g, '<ul>$1</ul>');
+    return html;
+  }
+
+  function renderList() {
+    if (notes.length === 0) {
+      savedNotesList.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem;">No saved notes yet.</p>';
+      return;
+    }
+    savedNotesList.innerHTML = '';
+    notes.forEach((n, i) => {
+      const item = document.createElement('div');
+      item.style.cssText = 'display:flex;justify-content:space-between;align-items:center;background:rgba(28,32,48,0.7);border:1px solid rgba(255,255,255,0.08);padding:0.6rem 1rem;border-radius:8px;cursor:pointer;transition:all 0.2s;margin-bottom:0.4rem;';
+      item.innerHTML = `
+        <div style="flex:1;">
+          <span style="font-weight:600;color:var(--gold);font-size:0.9rem;">${n.title || 'Untitled'}</span>
+          <span style="font-size:0.75rem;color:var(--text-muted);margin-left:0.5rem;">${new Date(n.date).toLocaleDateString()}</span>
+        </div>
+        <button class="budget-del" data-idx="${i}" style="background:none;border:none;color:var(--text-muted);cursor:pointer;padding:0.3rem;font-size:0.9rem;">✕</button>
+      `;
+      item.querySelector('div').addEventListener('click', () => {
+        editingIdx = i;
+        noteTitle.value = n.title;
+        noteInput.value = n.content;
+        noteInput.style.display = 'block';
+        notePreview.style.display = 'none';
+        noteEditBtn.classList.add('active');
+        notePreviewBtn.classList.remove('active');
+      });
+      item.querySelector('.budget-del').addEventListener('click', (e) => {
+        e.stopPropagation();
+        notes.splice(i, 1);
+        save();
+        renderList();
+        if (editingIdx === i) { editingIdx = -1; noteTitle.value = ''; noteInput.value = ''; }
+      });
+      savedNotesList.appendChild(item);
+    });
+  }
+
+  noteSaveBtn.addEventListener('click', () => {
+    const title = noteTitle.value.trim() || 'Untitled Note';
+    const content = noteInput.value;
+    if (!content.trim()) return alert('Write something before saving!');
+
+    if (editingIdx >= 0 && editingIdx < notes.length) {
+      notes[editingIdx].title = title;
+      notes[editingIdx].content = content;
+      notes[editingIdx].date = new Date().toISOString();
+    } else {
+      notes.unshift({ title, content, date: new Date().toISOString() });
+      editingIdx = 0;
+    }
+    save();
+    renderList();
+    alert('Note saved! ✅');
+  });
+
+  noteNewBtn.addEventListener('click', () => {
+    editingIdx = -1;
+    noteTitle.value = '';
+    noteInput.value = '';
+    noteInput.style.display = 'block';
+    notePreview.style.display = 'none';
+    noteEditBtn.classList.add('active');
+    notePreviewBtn.classList.remove('active');
+    noteInput.focus();
+  });
+
+  noteEditBtn.addEventListener('click', () => {
+    noteInput.style.display = 'block';
+    notePreview.style.display = 'none';
+    noteEditBtn.classList.add('active');
+    notePreviewBtn.classList.remove('active');
+  });
+
+  notePreviewBtn.addEventListener('click', () => {
+    notePreview.innerHTML = markdownToHtml(noteInput.value);
+    noteInput.style.display = 'none';
+    notePreview.style.display = 'block';
+    notePreviewBtn.classList.add('active');
+    noteEditBtn.classList.remove('active');
+  });
+
+  noteDownloadBtn.addEventListener('click', () => {
+    const text = noteInput.value;
+    if (!text.trim()) return alert('Nothing to download!');
+    const title = noteTitle.value.trim() || 'note';
+    const blob = new Blob([text], { type: 'text/plain' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = title.replace(/[^a-z0-9]/gi, '_') + '.txt';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+
+  renderList();
+})();
+
+
+// =============================================
+// 14. CITATION GENERATOR
+// =============================================
+(function () {
+  const citFormat   = document.getElementById('citFormat');
+  const citAuthor   = document.getElementById('citAuthor');
+  const citYear     = document.getElementById('citYear');
+  const citTitle    = document.getElementById('citTitle');
+  const citSite     = document.getElementById('citSite');
+  const citUrl      = document.getElementById('citUrl');
+  const citGenBtn   = document.getElementById('citGenerateBtn');
+  const citResult   = document.getElementById('citResult');
+  const citText     = document.getElementById('citText');
+  const citCopyBtn  = document.getElementById('citCopyBtn');
+
+  if (!citGenBtn) return;
+
+  citGenBtn.addEventListener('click', () => {
+    const author = citAuthor.value.trim();
+    const year   = citYear.value.trim();
+    const title  = citTitle.value.trim();
+    const site   = citSite.value.trim();
+    const url    = citUrl.value.trim();
+    const format = citFormat.value;
+
+    if (!author && !title) return alert('Please enter at least an author or title.');
+
+    let citation = '';
+
+    if (format === 'APA') {
+      if (author) citation += author;
+      if (year) citation += ` (${year}).`;
+      else citation += '.';
+      if (title) citation += ` ${title}.`;
+      if (site) citation += ` <em>${site}</em>.`;
+      if (url) citation += ` ${url}`;
+    } else {
+      if (author) citation += author + '. ';
+      if (title) citation += `"${title}." `;
+      if (site) citation += `<em>${site}</em>, `;
+      if (year) citation += `${year}, `;
+      if (url) citation += `${url}`;
+      if (citation.endsWith(', ')) citation = citation.slice(0, -2);
+      citation += '.';
+    }
+
+    citText.innerHTML = citation;
+    citResult.style.display = 'flex';
+  });
+
+  citCopyBtn.addEventListener('click', () => {
+    const plainText = citText.innerText;
+    navigator.clipboard.writeText(plainText).then(() => {
+      citCopyBtn.textContent = '✓ Copied!';
+      setTimeout(() => { citCopyBtn.textContent = 'Copy'; }, 2000);
+    });
+  });
+})();
+
+
+// =============================================
+// 15. EMI CALCULATOR
+// =============================================
+(function () {
+  const emiCalcBtn = document.getElementById('emiCalcBtn');
+  if (!emiCalcBtn) return;
+
+  function formatNum(n) {
+    return n.toLocaleString('en-IN', { maximumFractionDigits: 0 });
+  }
+
+  emiCalcBtn.addEventListener('click', () => {
+    const P = parseFloat(document.getElementById('emiPrincipal').value);
+    const annualRate = parseFloat(document.getElementById('emiRate').value);
+    const tenure = parseFloat(document.getElementById('emiTenure').value);
+    const tenureType = document.getElementById('emiTenureType').value;
+    const resultEl = document.getElementById('emiResult');
+
+    if (isNaN(P) || P <= 0 || isNaN(annualRate) || isNaN(tenure) || tenure <= 0) {
+      return alert('Please enter valid loan details.');
+    }
+
+    // Convert to months
+    const n = tenureType === 'years' ? tenure * 12 : tenure;
+
+    let emi, totalPayment, totalInterest;
+
+    if (annualRate === 0) {
+      // No interest
+      emi = P / n;
+      totalPayment = P;
+      totalInterest = 0;
+    } else {
+      // Monthly interest rate
+      const r = (annualRate / 100) / 12;
+      // EMI formula: P × r × (1+r)^n / ((1+r)^n - 1)
+      const factor = Math.pow(1 + r, n);
+      emi = P * r * factor / (factor - 1);
+      totalPayment = emi * n;
+      totalInterest = totalPayment - P;
+    }
+
+    document.getElementById('emiMonthly').textContent = 'Rs. ' + formatNum(emi);
+    document.getElementById('emiInterest').textContent = 'Rs. ' + formatNum(totalInterest);
+    document.getElementById('emiTotal').textContent = 'Rs. ' + formatNum(totalPayment);
+    resultEl.style.display = 'block';
+  });
+})();
