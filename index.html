@@ -12,6 +12,7 @@
 </head>
 
 <body>
+  <canvas id="confetti-canvas"></canvas>
 
   <!-- NAVBAR -->
   <nav class="navbar">
@@ -47,14 +48,19 @@
     <div class="tool-tabs">
       <button class="tab active" data-tab="pomodoro">⏱ Pomodoro</button>
       <button class="tab" data-tab="todo">✅ To-Do List</button>
+      <button class="tab" data-tab="deadlines">🚨 Deadlines</button>
+      <button class="tab" data-tab="notes">📝 Notes</button>
+      <button class="tab" data-tab="citations">📚 Citations</button>
       <button class="tab" data-tab="wordcount">📝 Word Counter</button>
-      <button class="tab" data-tab="gpa">🎓 NEB GPA Calc</button>
-      <button class="tab" data-tab="sem-gpa">🎓 Sem GPA Calc</button>
-      <button class="tab" data-tab="percent">🔢 % Calculator</button>
+      <button class="tab" data-tab="budget">💸 Budget</button>
+      <button class="tab" data-tab="sounds">🎧 Sounds</button>
+      <button class="tab" data-tab="gpa">🎓 NEB GPA</button>
+      <button class="tab" data-tab="sem-gpa">🎓 Sem GPA</button>
+      <button class="tab" data-tab="percent">🔢 % Calc</button>
       <button class="tab" data-tab="flashcard">🃏 Flashcards</button>
-      <button class="tab" data-tab="converter">📐 Unit Converter</button>
-      <button class="tab" data-tab="planner">📅 Study Planner</button>
-      <button class="tab" data-tab="bmi">⚖️ BMI Calculator</button>
+      <button class="tab" data-tab="converter">📐 Converter</button>
+      <button class="tab" data-tab="planner">📅 Planner</button>
+      <button class="tab" data-tab="bmi">⚖️ BMI</button>
     </div>
 
     <!-- TOOL PANELS -->
@@ -410,6 +416,11 @@
               <span id="fcCounter">1 / 1</span>
               <button class="btn-round outline" id="fcNext">Next →</button>
             </div>
+            <div class="fc-srs-controls" id="fcSrsControls" style="display:none; gap: 0.5rem; margin-top: 1rem;">
+              <button class="btn-primary small" id="fcHard" style="background: var(--rose); border: none; color: #fff;">Hard (1d)</button>
+              <button class="btn-primary small" id="fcGood" style="background: var(--gold); border: none; color: #000;">Good (3d)</button>
+              <button class="btn-primary small" id="fcEasy" style="background: var(--teal); border: none; color: #fff;">Easy (7d)</button>
+            </div>
             <div class="fc-hint" id="fcHint" style="display:none;">Click card to flip</div>
           </div>
           <button class="link-btn danger" id="fcClear">🗑 Clear all cards</button>
@@ -546,6 +557,119 @@
               </div>
             </div>
             <div class="bmi-tip" id="bmiTip"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 10. BUDGET TRACKER -->
+      <div class="panel" id="panel-budget">
+        <div class="panel-header">
+          <h3>Budget Tracker</h3>
+          <p>Keep track of your income and expenses.</p>
+        </div>
+        <div class="budget-wrap">
+          <div class="budget-overview">
+            <div class="budget-card balance">
+              <h4>Balance</h4>
+              <div class="amount" id="budgetBalance">Rs. 0</div>
+            </div>
+            <div class="budget-card income">
+              <h4>Income</h4>
+              <div class="amount" id="budgetIncome">Rs. 0</div>
+            </div>
+            <div class="budget-card expense">
+              <h4>Expenses</h4>
+              <div class="amount" id="budgetExpense">Rs. 0</div>
+            </div>
+          </div>
+          <div class="budget-add">
+            <input type="text" id="budgetName" placeholder="Transaction Name (e.g., Lunch)" />
+            <input type="number" id="budgetAmount" placeholder="Amount" min="0" />
+            <select id="budgetType">
+              <option value="expense">Expense (-)</option>
+              <option value="income">Income (+)</option>
+            </select>
+            <button class="btn-primary small" id="budgetAddBtn">Add</button>
+          </div>
+          <ul class="budget-list" id="budgetList">
+            <!-- Items go here -->
+          </ul>
+        </div>
+      </div>
+
+      <!-- 11. FOCUS SOUNDS -->
+      <div class="panel" id="panel-sounds">
+        <div class="panel-header">
+          <h3>Focus Sounds</h3>
+          <p>Listen to Lo-Fi radio while you study.</p>
+        </div>
+        <div class="sounds-wrap">
+          <div class="lofi-player">
+            <!-- Lofi Girl Stream -->
+            <iframe width="100%" height="100%" src="https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=0&controls=1" 
+                    title="lofi hip hop radio - beats to relax/study to" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen></iframe>
+          </div>
+          <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem; text-align: center;">Press play to start the Lofi radio. It will run in the background while you use other tools.</p>
+        </div>
+      </div>
+
+      <!-- 12. DEADLINE TRACKER -->
+      <div class="panel" id="panel-deadlines">
+        <div class="panel-header">
+          <h3>Assignment Deadlines</h3>
+          <p>Track urgent assignments sorted by due date.</p>
+        </div>
+        <div class="deadline-wrap">
+          <div class="deadline-add">
+            <input type="text" id="dlName" placeholder="Assignment Name" />
+            <input type="date" id="dlDate" />
+            <button class="btn-primary small" id="dlAddBtn">Add</button>
+          </div>
+          <div class="deadline-list" id="dlList"></div>
+        </div>
+      </div>
+
+      <!-- 13. QUICK NOTES -->
+      <div class="panel" id="panel-notes">
+        <div class="panel-header">
+          <h3>Quick Notes</h3>
+          <p>Distraction-free Markdown notepad. Auto-saves locally.</p>
+        </div>
+        <div class="notes-wrap">
+          <div class="notes-toolbar">
+            <button class="btn-outline small active" id="noteEditBtn">Edit</button>
+            <button class="btn-outline small" id="notePreviewBtn">Preview</button>
+          </div>
+          <textarea id="noteInput" placeholder="# Notes&#10;&#10;Start typing here..."></textarea>
+          <div id="notePreview" class="note-preview" style="display:none;"></div>
+        </div>
+      </div>
+
+      <!-- 14. CITATION GENERATOR -->
+      <div class="panel" id="panel-citations">
+        <div class="panel-header">
+          <h3>Citation Generator</h3>
+          <p>Quickly generate APA or MLA citations.</p>
+        </div>
+        <div class="citation-wrap">
+          <div class="citation-add">
+            <select id="citFormat">
+              <option value="APA">APA 7th</option>
+              <option value="MLA">MLA 9th</option>
+            </select>
+            <input type="text" id="citAuthor" placeholder="Author (Last, First)" />
+            <input type="text" id="citYear" placeholder="Year" />
+            <input type="text" id="citTitle" placeholder="Article/Page Title" />
+            <input type="text" id="citSite" placeholder="Website/Journal Name" />
+            <input type="url" id="citUrl" placeholder="URL" />
+            <button class="btn-primary small" id="citGenerateBtn">Generate</button>
+          </div>
+          <div class="citation-result" id="citResult" style="display:none;">
+            <p id="citText"></p>
+            <button class="btn-outline small" id="citCopyBtn">Copy</button>
           </div>
         </div>
       </div>

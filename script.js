@@ -64,6 +64,7 @@ document.querySelectorAll('.tab').forEach(tab => {
           sessions++;
           sessionEl.textContent = sessions;
         }
+        if (typeof fireConfetti === 'function') fireConfetti();
         alert(`${label.textContent} session complete! 🎉`);
         return;
       }
@@ -211,7 +212,9 @@ document.querySelectorAll('.tab').forEach(tab => {
   }
 
   clearBtn.addEventListener('click', () => {
+    const originalLen = tasks.length;
     tasks = tasks.filter(t => !t.done);
+    if (tasks.length < originalLen && typeof fireConfetti === 'function') fireConfetti();
     render();
   });
 
@@ -990,3 +993,129 @@ document.querySelectorAll('.tab').forEach(tab => {
     resultEl.className = 'bmi-result show';
   });
 })();
+
+// =============================================
+// 10. BUDGET TRACKER
+// =============================================
+(function () {
+  const budgetBalance = document.getElementById('budgetBalance');
+  const budgetIncome = document.getElementById('budgetIncome');
+  const budgetExpense = document.getElementById('budgetExpense');
+  const budgetName = document.getElementById('budgetName');
+  const budgetAmount = document.getElementById('budgetAmount');
+  const budgetType = document.getElementById('budgetType');
+  const budgetAddBtn = document.getElementById('budgetAddBtn');
+  const budgetList = document.getElementById('budgetList');
+
+  if (!budgetBalance) return; // guard
+
+  let transactions = JSON.parse(localStorage.getItem('studyhub_budget')) || [];
+
+  function saveAndRender() {
+    localStorage.setItem('studyhub_budget', JSON.stringify(transactions));
+    
+    let totalIncome = 0;
+    let totalExpense = 0;
+    budgetList.innerHTML = '';
+
+    transactions.forEach((t, i) => {
+      if (t.type === 'income') totalIncome += t.amount;
+      else totalExpense += t.amount;
+
+      const li = document.createElement('li');
+      li.className = `budget-item ${t.type}`;
+      li.innerHTML = `
+        <div class="budget-item-info">
+          <span class="budget-item-name">${t.name}</span>
+          <span class="budget-item-date">${new Date(t.date).toLocaleDateString()}</span>
+        </div>
+        <div class="budget-item-amount">${t.type === 'income' ? '+' : '-'}Rs. ${t.amount}</div>
+        <button class="budget-del" data-idx="${i}">✕</button>
+      `;
+      budgetList.appendChild(li);
+    });
+
+    const balance = totalIncome - totalExpense;
+    budgetBalance.textContent = 'Rs. ' + balance;
+    budgetIncome.textContent = 'Rs. ' + totalIncome;
+    budgetExpense.textContent = 'Rs. ' + totalExpense;
+
+    budgetList.querySelectorAll('.budget-del').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const idx = parseInt(e.target.dataset.idx);
+        transactions.splice(idx, 1);
+        saveAndRender();
+      });
+    });
+  }
+
+  budgetAddBtn.addEventListener('click', () => {
+    const name = budgetName.value.trim();
+    const amount = parseFloat(budgetAmount.value);
+    const type = budgetType.value;
+
+    if (!name || isNaN(amount) || amount <= 0) return alert('Enter a valid name and amount.');
+
+    transactions.unshift({ name, amount, type, date: new Date().toISOString() });
+    budgetName.value = '';
+    budgetAmount.value = '';
+    saveAndRender();
+  });
+
+  saveAndRender();
+})();
+
+// =============================================
+// CONFETTI ANIMATION
+// =============================================
+function fireConfetti() {
+  const canvas = document.getElementById('confetti-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const pieces = [];
+  const colors = ['#e8b86d', '#4ecdc4', '#f26b6b', '#f5d49a', '#a8e063'];
+
+  for (let i = 0; i < 150; i++) {
+    pieces.push({
+      x: canvas.width / 2,
+      y: canvas.height / 2 + (Math.random() * 50),
+      vx: (Math.random() - 0.5) * 20,
+      vy: (Math.random() - 1) * 20 - 5,
+      size: Math.random() * 8 + 4,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      rot: Math.random() * 360,
+      rotSpeed: (Math.random() - 0.5) * 10
+    });
+  }
+
+  let animationId;
+  function update() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let active = false;
+    pieces.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.5; // gravity
+      p.rot += p.rotSpeed;
+      
+      if (p.y < canvas.height) active = true;
+
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot * Math.PI / 180);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+      ctx.restore();
+    });
+
+    if (active) {
+      animationId = requestAnimationFrame(update);
+    } else {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  }
+  update();
+}
