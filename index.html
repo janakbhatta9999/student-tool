@@ -19,8 +19,24 @@
     <div class="nav-brand">📚 StudyHub</div>
     <ul class="nav-links">
       <li><a href="#tools">Tools</a></li>
+      <li><a href="#features">Features</a></li>
       <li><a href="#" class="nav-cta">Get Started</a></li>
     </ul>
+    <!-- Three-dot menu -->
+    <div class="nav-dots-menu">
+      <button class="dots-btn" id="dotsMenuBtn" aria-label="More options">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="dots-dropdown" id="dotsDropdown">
+        <a href="#features"><span class="dd-icon">✨</span> Features</a>
+        <a href="#about"><span class="dd-icon">ℹ️</span> About</a>
+        <a href="#tools"><span class="dd-icon">🛠️</span> Tools</a>
+        <a href="#contact"><span class="dd-icon">📬</span> Contact</a>
+        <div class="dd-divider"></div>
+        <a href="https://github.com" target="_blank"><span class="dd-icon">🌐</span> GitHub</a>
+        <a href="mailto:janakbhatta64@gmail.com"><span class="dd-icon">📧</span> Email Us</a>
+      </div>
+    </div>
   </nav>
 
   <!-- HERO -->
@@ -39,6 +55,74 @@
       <div class="floating-card c4">✅ Tasks</div>
     </div>
   </header>
+
+  <!-- FEATURES SHOWCASE -->
+  <section id="features" class="features-section">
+    <h2 class="section-title">Why Students Love StudyHub</h2>
+    <p class="section-subtitle">Everything you need to conquer your academic life — powerful, beautiful, and completely free.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">⏱️</div>
+        <h3>Smart Timers</h3>
+        <p>Custom Pomodoro with auto-calculated breaks and session tracking to keep your focus razor-sharp.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎓</div>
+        <h3>NEB GPA Calculator</h3>
+        <p>Built specifically for Nepal's NEB +2 system — enter theory & practical marks to get instant GPA results.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🃏</div>
+        <h3>Spaced Repetition</h3>
+        <p>Flashcards with a smart repetition algorithm that prioritizes harder cards so you learn more efficiently.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📝</div>
+        <h3>Rich Notes</h3>
+        <p>Quick notes with Markdown support, preview mode, and download — your digital notebook, always ready.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🚨</div>
+        <h3>Deadline Tracker</h3>
+        <p>Color-coded urgency indicators so you never miss an assignment — sorted by due date automatically.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💸</div>
+        <h3>Budget Manager</h3>
+        <p>Track income and expenses as a student — see your balance at a glance with beautiful summaries.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📐</div>
+        <h3>Unit Converter</h3>
+        <p>Length, weight, temperature, area, time — convert anything instantly with a sleek interface.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📚</div>
+        <h3>Citation Generator</h3>
+        <p>APA and MLA formats at your fingertips — generate proper citations in seconds, not minutes.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS BANNER -->
+  <section class="stats-banner">
+    <div class="stat-item">
+      <span class="stat-number" data-target="15">0</span><span class="stat-suffix">+</span>
+      <span class="stat-label">Tools Available</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number" data-target="100">0</span><span class="stat-suffix">%</span>
+      <span class="stat-label">Free Forever</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number" data-target="0">0</span><span class="stat-suffix"></span>
+      <span class="stat-label">Ads or Tracking</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number" data-target="24">0</span><span class="stat-suffix">/7</span>
+      <span class="stat-label">Available Anytime</span>
+    </div>
+  </section>
 
   <!-- TOOLS SECTION -->
   <section id="tools" class="tools-section">
@@ -759,10 +843,109 @@
     </div>
   </section>
 
+  <!-- ABOUT SECTION -->
+  <section id="about" class="about-section">
+    <div class="about-container">
+      <div class="about-content">
+        <span class="about-tag">About StudyHub</span>
+        <h2 class="about-title">Built for Students,<br><em>by Students.</em></h2>
+        <p class="about-text">
+          StudyHub is a free, all-in-one academic toolkit designed to help students study smarter — not harder. 
+          From Pomodoro timers and GPA calculators tailored for Nepal's NEB system, to flashcards with spaced 
+          repetition and citation generators, we pack everything you need into one beautiful, distraction-free interface.
+        </p>
+        <p class="about-text">
+          Our mission is simple: give every student access to powerful productivity tools without paywalls, 
+          ads, or account requirements. Whether you're studying for your boards, managing assignments, or 
+          tracking your budget — StudyHub has your back.
+        </p>
+        <div class="about-highlights">
+          <div class="about-highlight-item">
+            <span class="ah-icon">🔒</span>
+            <div>
+              <strong>Privacy First</strong>
+              <p>All data stays in your browser. No servers, no tracking.</p>
+            </div>
+          </div>
+          <div class="about-highlight-item">
+            <span class="ah-icon">⚡</span>
+            <div>
+              <strong>Blazing Fast</strong>
+              <p>Pure HTML, CSS & JS — no frameworks, no bloat, instant load.</p>
+            </div>
+          </div>
+          <div class="about-highlight-item">
+            <span class="ah-icon">🎨</span>
+            <div>
+              <strong>Beautiful Design</strong>
+              <p>Dark academic aesthetic with premium glassmorphism UI.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="about-visual">
+        <div class="about-card-stack">
+          <div class="about-floating a1">📚 15+ Tools</div>
+          <div class="about-floating a2">🎓 NEB System</div>
+          <div class="about-floating a3">🇳🇵 Made in Nepal</div>
+          <div class="about-floating a4">💜 For Students</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT SECTION -->
+  <section id="contact" class="contact-section">
+    <h2 class="section-title">Get in Touch</h2>
+    <p class="section-subtitle">Have a suggestion, found a bug, or just want to say hi? We'd love to hear from you.</p>
+    <div class="contact-cards">
+      <a href="mailto:janakbhatta64@gmail.com" class="contact-card">
+        <div class="contact-icon">📧</div>
+        <h3>Email Us</h3>
+        <p>janakbhatta64@gmail.com</p>
+        <span class="contact-action">Send Email →</span>
+      </a>
+      <a href="tel:+9779769910184" class="contact-card">
+        <div class="contact-icon">📞</div>
+        <h3>Call Us</h3>
+        <p>9769910184</p>
+        <span class="contact-action">Make a Call →</span>
+      </a>
+      <div class="contact-card">
+        <div class="contact-icon">📍</div>
+        <h3>Location</h3>
+        <p>Nepal 🇳🇵</p>
+        <span class="contact-action">Built with ❤️</span>
+      </div>
+    </div>
+  </section>
+
   <!-- FOOTER -->
   <footer class="footer">
-    <p>📚 StudyHub — Built for Students, by Students</p>
-    <p class="footer-sub">Focus. Learn. Succeed.</p>
+    <div class="footer-content">
+      <div class="footer-brand">
+        <span class="footer-logo">📚 StudyHub</span>
+        <p>Your all-in-one academic toolkit. Study smarter, not harder.</p>
+      </div>
+      <div class="footer-links-grid">
+        <div class="footer-col">
+          <h4>Navigate</h4>
+          <a href="#tools">Tools</a>
+          <a href="#features">Features</a>
+          <a href="#about">About</a>
+          <a href="#contact">Contact</a>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <a href="mailto:janakbhatta64@gmail.com">janakbhatta64@gmail.com</a>
+          <a href="tel:+9779769910184">9769910184</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 StudyHub — Built for Students, by Students</p>
+      <p class="footer-sub">Focus. Learn. Succeed.</p>
+    </div>
   </footer>
 
   <script src="script.js"></script>
